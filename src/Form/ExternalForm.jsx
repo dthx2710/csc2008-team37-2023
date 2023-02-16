@@ -16,7 +16,8 @@ import {
 // step 2
 
 const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
-  const externalInit = { airPollution: 1 };
+  const { airPollution } = info;
+  const externalInit = { airPollution: airPollution??1 };
   const [values, setValues] = useState(externalInit);
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });

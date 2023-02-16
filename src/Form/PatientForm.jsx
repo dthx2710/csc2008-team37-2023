@@ -18,7 +18,8 @@ import {
 //step 1
 
 const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
-  const patientInit = { age: '', gender: 0 };
+  const { age, gender } = info;
+  const patientInit = { age: age??'', gender: gender??0 };
   const [values, setValues] = useState(patientInit);
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });

@@ -16,7 +16,8 @@ import {
 // step 2
 
 const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
-  const internalInit = { alcoholUse: 1 };
+  const { alcoholUse } = info;
+  const internalInit = { alcoholUse: alcoholUse??1 };
   const [values, setValues] = useState(internalInit);
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event });

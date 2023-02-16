@@ -16,7 +16,8 @@ import {
 // step 4
 
 const SymptomForm = ({ info, setStep, setProgress, setInfo }) => {
-  const symptomInit = { chestPain: 1 };
+  const { chestPain } = info;
+  const symptomInit = { chestPain: chestPain??1 };
   const [values, setValues] = useState(symptomInit);
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
