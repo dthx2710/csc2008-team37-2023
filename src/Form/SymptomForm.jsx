@@ -38,7 +38,8 @@ const SymptomForm = ({ info, setStep, setProgress, setInfo }) => {
             defaultValue={1}
             min={1}
             max={9}
-            onChangeEnd={handleSliderChange("chestPain")}
+            onChange={handleSliderChange("chestPain")}
+            value={values.chestPain}
           >
             <SliderTrack>
               <SliderFilledTrack />
@@ -53,6 +54,7 @@ const SymptomForm = ({ info, setStep, setProgress, setInfo }) => {
           onClick={() => {
             setStep(3);
             setProgress(50);
+            setInfo({ ...info, ...values });
           }}
         >
           Back

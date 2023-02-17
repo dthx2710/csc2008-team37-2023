@@ -67,7 +67,6 @@ const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
 
             console.log(info);
             setInfo({ ...info, ...values });
-            console.log(values);
             console.log(info);
           }}
         >

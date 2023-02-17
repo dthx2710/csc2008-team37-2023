@@ -38,7 +38,8 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
             defaultValue={1}
             min={1}
             max={8}
-            onChangeEnd={handleSliderChange("airPollution")}
+            onChange={handleSliderChange("airPollution")}
+            value={values.airPollution}
           >
             <SliderTrack>
               <SliderFilledTrack />
@@ -53,6 +54,7 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
           onClick={() => {
             setStep(2);
             setProgress(25);
+            setInfo({ ...info, ...values });
           }}
         >
           Back
@@ -63,7 +65,7 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
             setStep(4);
             setProgress(75);
             setInfo({ ...info, ...values });
-            console.log(values);
+            console.log(info);
           }}
         >
           Next

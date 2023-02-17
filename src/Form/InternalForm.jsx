@@ -38,7 +38,8 @@ const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
             defaultValue={1}
             min={1}
             max={8}
-            onChangeEnd={handleSliderChange("alcoholUse")}
+            onChange={handleSliderChange("alcoholUse")}
+            value={values.alcoholUse}
           >
             <SliderTrack>
               <SliderFilledTrack />
@@ -54,6 +55,7 @@ const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
           onClick={() => {
             setStep(1);
             setProgress(0);
+            setInfo({ ...info, ...values });
           }}
         >
           Back
@@ -64,7 +66,7 @@ const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
             setStep(3);
             setProgress(50);
             setInfo({ ...info, ...values });
-            console.log(values);
+            console.log(info);
           }}
         >
           Next
