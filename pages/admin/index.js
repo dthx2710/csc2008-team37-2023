@@ -11,7 +11,8 @@ import {
   Tr,
   Th,
   Td,
-  Box
+  Box,
+  Button,
 } from "@chakra-ui/react";
 import { useTable } from "react-table";
 import Head from "next/head";
@@ -20,6 +21,12 @@ const data = [
   { key: "1", name: "John", age: 30 },
   { key: "2", name: "Jane", age: 25 },
   { key: "3", name: "Bob", age: 40 },
+];
+
+const data2 = [
+  { key: "1", name: "Test", age: 30 },
+  { key: "2", name: "Test2", age: 25 },
+  { key: "3", name: "Test3", age: 40 },
 ];
 
 const columns = [
@@ -74,19 +81,27 @@ function AdminDashboard() {
       <Box mx="auto" maxWidth="90%">
         <Tabs variant="enclosed" colorScheme="teal">
           <TabList>
-            <Tab>Test</Tab>
-            <Tab>Test2</Tab>
-            <Tab>Test3</Tab>
+            <Tab>Table 1</Tab>
+            <Tab>Table 2</Tab>
+            <Tab>SQL Editor</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
               <DataTable columns={columns} data={data} keyField="key" />
             </TabPanel>
             <TabPanel>
-              <DataTable columns={columns} data={data} keyField="key" />
+              <DataTable columns={columns} data={data2} keyField="key" />
             </TabPanel>
             <TabPanel>
-              <DataTable columns={columns} data={data} keyField="key" />
+              <Box>
+                <textarea
+                  style={{ width: "100%", height: "100%" }}
+                  placeholder="Enter SQL Query"
+                ></textarea>
+              </Box>
+              <Button colorScheme="teal" variant="outline">
+                Run Query
+              </Button>
             </TabPanel>
           </TabPanels>
         </Tabs>

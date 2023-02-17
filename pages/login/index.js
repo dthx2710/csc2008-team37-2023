@@ -6,6 +6,7 @@ import {
   FormLabel,
   Input,
   Button,
+  Link,
 } from "@chakra-ui/react";
 import Head from "next/head";
 
@@ -40,7 +41,7 @@ function Login() {
               <FormLabel>Password</FormLabel>
               <Input type="password" placeholder="Password" />
             </FormControl>
-            <Button width="full" mt={4} colorScheme="teal">
+            <Button width="full" mt={4} colorScheme="teal" as={Link} href="/admin">
               Login
             </Button>
           </Box>
