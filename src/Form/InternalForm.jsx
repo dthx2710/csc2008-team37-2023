@@ -11,14 +11,20 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  Tooltip,
 } from "@chakra-ui/react";
 
 // step 2
 
 const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
   const { alcoholUse } = info;
-  const internalInit = { alcoholUse: alcoholUse??1 };
+  const internalInit = { alcoholUse: alcoholUse ?? 1 };
+  const internalTooltip = { alcoholUse: false };
   const [values, setValues] = useState(internalInit);
+  const [showTooltip, setShowTooltip] = useState(internalTooltip);
+  const handleTooltip = (prop, value) => {
+    setShowTooltip({...showTooltip, [prop]: value})
+  }
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event });
   };
@@ -40,11 +46,22 @@ const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
             max={8}
             onChange={handleSliderChange("alcoholUse")}
             value={values.alcoholUse}
+            onMouseEnter={() => handleTooltip("alcoholUse", true)}
+            onMouseLeave={() => handleTooltip("alcoholUse", false)}
           >
             <SliderTrack>
               <SliderFilledTrack />
             </SliderTrack>
-            <SliderThumb />
+            <Tooltip
+              hasArrow
+              bg="blue.500"
+              color="white"
+              placement="top"
+              isOpen={showTooltip.alcoholUse}
+              label={`${values.alcoholUse}`}
+            >
+              <SliderThumb />
+            </Tooltip>
           </Slider>
           <FormHelperText>Level of alcohol use</FormHelperText>
           <FormErrorMessage>This field is required</FormErrorMessage>
