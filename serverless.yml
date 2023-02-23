@@ -3,8 +3,21 @@ functions:
   ml:
     handler: ml.handler
     memory: 1024MB
-    runtime: vercel-python@0.3.0
+    runtime: vercel-python@0.6.0
+    environment:
+      PYTHONPATH: /var/task:/var/runtime:/opt
     events:
       - http:
           method: GET
           path: api/ml
+    package:
+      exclude:
+        - node_modules/**
+        - __pycache__/**
+
+      include:
+        - ./**/*.py
+        - ./scripts/venv/**
+        - ./node_modules/**
+plugins:
+  - serverless-vercel-functions

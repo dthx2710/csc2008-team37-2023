@@ -1,26 +1,71 @@
 const { spawn } = require('child_process');
+const path = require('path');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 module.exports = async (req, res) => {
-  // Run Python script
-  console.log('run python script')
-  const pyProg = spawn('python', ['./scripts/naive_bayes.py']);
+  try {
+    // Activate virtual environment
+    // const activateEnv = path.join(__dirname, './scripts/venv/Scripts/activate');
+    const activateEnv = path.join('./scripts/venv/Scripts/activate');
+    const { stdout } = await exec(activateEnv);
 
-  // Handle data received from Python script
-  let dataToSend = '';
-  pyProg.stdout.on('data', function(data) {
-    console.log(data.toString());
-    dataToSend += data.toString();
-  });
+    // Install required packages
+    const pipInstall = spawn('pip', ['install', '-r', './scripts/requirements.txt'], { shell: true, stdio: 'inherit' });
+    await new Promise((resolve, reject) => {
+      pipInstall.on('error', (err) => {
+        console.error(`Error installing packages: ${err}`);
+        reject(err);
+      });
 
-  // Handle errors
-  pyProg.stderr.on('data', (data) => {
-    console.error(`Error: ${data}`);
-    res.status(500).send({ error: data.toString() });
-  });
+      pipInstall.on('close', (code) => {
+        if (code !== 0) {
+          console.error(`Package installation failed with code ${code}`);
+          reject(`Package installation failed with code ${code}`);
+          return;
+        }
 
-  // When Python script finishes
-  pyProg.on('close', (code) => {
-    console.log(`child process close all stdio with code ${code}`);
-    res.status(200).send({ data: dataToSend });
-  });
-};
+        console.log('Packages installed successfully');
+        resolve();
+      });
+    });
+
+    // Run Python script
+    const pythonScript = spawn('./scripts/venv/Scripts/python', ['./scripts/naive_bayes.py'], {stdio: ['ignore', 'pipe', 'pipe']});
+    await new Promise((resolve, reject) => {
+      let output = '';
+      let error = '';
+      pythonScript.on('error', (err) => {
+        console.error(`Error running Python script: ${err}`);
+        reject(err);
+      });
+
+      pythonScript.stdout.on('data', (data) => {
+        output += data.toString();
+      });
+
+      pythonScript.stderr.on('data', (data) => {
+        console.error(`Error running Python script: ${data}`);
+        error += data.toString();
+        reject(`Error running Python script: ${data}`);
+      });
+
+    
+
+      pythonScript.on('close', (code) => {
+        if (code !== 0) {
+          console.error(`ML script exited with code ${code}. Error output: ${error}`);
+          reject(`ML script exited with code ${code}.`);
+          return;
+        }
+
+        console.log('ML script completed successfully');
+        res.status(200).json({ result: output });
+        resolve();
+      });
+    });
+  } catch (err) {
+    console.error(`Error running ML script: ${err}`);
+    res.status(500).json({ error: `Error running ML script: ${err}` });
+  }
+}
