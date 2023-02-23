@@ -5,9 +5,10 @@ const exec = util.promisify(require('child_process').exec);
 
 module.exports = async (req, res) => {
   try {
+    let venv_keyword = process.env.OS_VENV == 'WINDOWS' ? 'Scripts' : 'bin';
     // Activate virtual environment
     // const activateEnv = path.join(__dirname, './scripts/venv/Scripts/activate');
-    const activateEnv = path.join('./scripts/venv/Scripts/activate');
+    const activateEnv = path.join(`./scripts/venv/${venv_keyword}/activate`);
     const { stdout } = await exec(activateEnv);
 
     // Install required packages
@@ -31,7 +32,7 @@ module.exports = async (req, res) => {
     });
 
     // Run Python script
-    const pythonScript = spawn('./scripts/venv/Scripts/python', ['./scripts/naive_bayes.py'], {stdio: ['ignore', 'pipe', 'pipe']});
+    const pythonScript = spawn(`./scripts/venv/${venv_keyword}/python`, ['./scripts/naive_bayes.py'], {stdio: ['ignore', 'pipe', 'pipe']});
     await new Promise((resolve, reject) => {
       let output = '';
       let error = '';
