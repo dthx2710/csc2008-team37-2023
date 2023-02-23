@@ -1,0 +1,10 @@
+name: csc2008-team37-2023
+functions:
+  ml:
+    handler: ml.handler
+    memory: 1024MB
+    runtime: vercel-python@0.3.0
+    events:
+      - http:
+          method: GET
+          path: api/ml
