@@ -67,7 +67,7 @@ module.exports = async (req, res) => {
       console.log(data);
     }
 
-    let venv_keyword = process.env.OS_VENV == "WINDOWS" ? "Scripts" : "bin";
+    let venv_keyword = process.env.OS_VENV == "LINUX" ? "bin" : "Scripts";
     // Activate virtual environment
     // const activateEnv = path.join(__dirname, './scripts/venv/Scripts/activate');
     const activateEnv = path.join(`./scripts/venv/${venv_keyword}/activate`);
