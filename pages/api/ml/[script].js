@@ -11,35 +11,60 @@ module.exports = async (req, res) => {
     let data = {
       Age: 35,
       Gender: 1,
-      'Air Pollution': 2,
-      'Alcohol use': 2,
-      'Dust Allergy': 3,
-      'OccuPational Hazards': 3,
-      'Genetic Risk': 2,
-      'chronic Lung Disease': 1,
-      'Balanced Diet': 4,
+      "Air Pollution": 2,
+      "Alcohol use": 2,
+      "Dust Allergy": 3,
+      "OccuPational Hazards": 3,
+      "Genetic Risk": 2,
+      "chronic Lung Disease": 1,
+      "Balanced Diet": 4,
       Obesity: 2,
       Smoking: 1,
-      'Passive Smoker': 1,
-      'Chest Pain': 3,
-      'Coughing of Blood': 2,
+      "Passive Smoker": 1,
+      "Chest Pain": 3,
+      "Coughing of Blood": 2,
       Fatigue: 2,
-      'Weight Loss': 1,
-      'Shortness of Breath': 2,
+      "Weight Loss": 1,
+      "Shortness of Breath": 2,
       Wheezing: 2,
-      'Swallowing Difficulty': 3,
-      'Clubbing of Finger Nails': 1,
-      'Frequent Cold': 2,
-      'Dry Cough': 2,
+      "Swallowing Difficulty": 3,
+      "Clubbing of Finger Nails": 1,
+      "Frequent Cold": 2,
+      "Dry Cough": 2,
       Snoring: 1,
     };
 
     if (method === "POST") {
-      console.log('test1')
-      data = req.body
+      console.log("test1");
+      data = req.body;
       // data = JSON.parse(req.body);
-      console.log('test2')
-      console.log(data)
+      console.log("test2");
+      data = {
+        Age: data.age,
+        Gender: data.gender,
+        "Air Pollution": data.airPollution,
+        "Alcohol use": data.alcoholUse,
+        "Dust Allergy": data.dustAllergy,
+        "OccuPational Hazards": data.occupationalHazards,
+        "Genetic Risk": data.geneticRisk,
+        "chronic Lung Disease": data.chronicLungDisease,
+        "Balanced Diet": data.balancedDiet,
+        Obesity: data.obesity,
+        Smoking: data.activeSmoking,
+        "Passive Smoker": data.passiveSmoking,
+        "Chest Pain": data.chestPain,
+        "Coughing of Blood": data.coughingOfBlood,
+        Fatigue: data.fatigue,
+        "Weight Loss": data.weightLoss,
+        "Shortness of Breath": data.shortnessOfBreath,
+        Wheezing: data.wheezing,
+        "Swallowing Difficulty": data.swallowingDifficulty,
+        "Clubbing of Finger Nails": data.clubbingOfFingernails,
+        "Frequent Cold": data.frequentCold,
+        "Dry Cough": data.dryCough,
+        Snoring: data.snoring,
+      }
+      console.log(data);
     }
 
     let venv_keyword = process.env.OS_VENV == "WINDOWS" ? "Scripts" : "bin";

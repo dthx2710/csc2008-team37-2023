@@ -16,9 +16,19 @@ const Form = () => {
     setProgress(0);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("submit form")
     console.log({ info });
+    const risk = await fetch("/api/ml/naive_bayes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(info),
+    }).then((res) => res.json());
+    console.log(risk.result)
+    window.alert("You are at a "+risk.result+" risk of having lung cancer.")
   };
 
   return (
@@ -64,6 +74,7 @@ const Form = () => {
                   setInfo={setInfo}
                   setStep={setStep}
                   setProgress={setProgress}
+                  submitForm={handleSubmit}
                 />
               )}
             </form>

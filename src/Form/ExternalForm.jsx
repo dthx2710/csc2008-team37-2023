@@ -11,14 +11,23 @@ import {
   SliderThumb,
   FormHelperText,
   FormErrorMessage,
+  Tooltip,
 } from "@chakra-ui/react";
 
 // step 2
 
 const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
-  const { airPollution } = info;
-  const externalInit = { airPollution: airPollution??1 };
+  const { airPollution, occupationalHazards } = info;
+  const externalInit = {
+    airPollution: airPollution ?? 1,
+    occupationalHazards: occupationalHazards ?? 1,
+  };
+  const externalTooltip = {};
   const [values, setValues] = useState(externalInit);
+  const [showTooltip, setShowTooltip] = useState(externalTooltip);
+  const handleTooltip = (prop, value) => {
+    setShowTooltip({ ...showTooltip, [prop]: value });
+  };
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
@@ -40,13 +49,57 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
             max={8}
             onChange={handleSliderChange("airPollution")}
             value={values.airPollution}
+            onMouseEnter={() => handleTooltip("airPollution", true)}
+            onMouseLeave={() => handleTooltip("airPollution", false)}
           >
             <SliderTrack>
               <SliderFilledTrack />
             </SliderTrack>
+            <Tooltip
+              hasArrow
+              bg="blue.500"
+              color="white"
+              placement="top"
+              isOpen={showTooltip.airPollution}
+              label={`${values.airPollution}`}
+            >
+              <SliderThumb />
+            </Tooltip>
             <SliderThumb />
           </Slider>
           <FormHelperText>Level of air pollution exposure</FormHelperText>
+          <FormErrorMessage>This field is required</FormErrorMessage>
+        </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="occupationalHazards">
+            Occupational Hazards
+          </FormLabel>
+          <Slider
+            aria-label="occupational-hazards-slider"
+            defaultValue={1}
+            min={1}
+            max={8}
+            onChange={handleSliderChange("occupationalHazards")}
+            value={values.occupationalHazards}
+            onMouseEnter={() => handleTooltip("occupationalHazards", true)}
+            onMouseLeave={() => handleTooltip("occupationalHazards", false)}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <Tooltip
+              hasArrow
+              bg="blue.500"
+              color="white"
+              placement="top"
+              isOpen={showTooltip.occupationalHazards}
+              label={`${values.occupationalHazards}`}
+            >
+              <SliderThumb />
+            </Tooltip>
+            <SliderThumb />
+          </Slider>
+          <FormHelperText>Level of occupational hazards</FormHelperText>
           <FormErrorMessage>This field is required</FormErrorMessage>
         </FormControl>
         <Button
@@ -65,7 +118,7 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
             setStep(4);
             setProgress(75);
             setInfo({ ...info, ...values });
-            console.log(info);
+            console.log(values);
           }}
         >
           Next

@@ -18,8 +18,8 @@ import {
 //step 1
 
 const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
-  const { age, gender } = info;
-  const patientInit = { age: age??'', gender: gender??0 };
+  const { age, gender, country } = info;
+  const patientInit = { age: age??'', gender: gender??0, country: country??0 };
   const [values, setValues] = useState(patientInit);
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -59,15 +59,32 @@ const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
           <FormHelperText>Please enter your age</FormHelperText>
           <FormErrorMessage>This field is required</FormErrorMessage>
         </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="country">Country</FormLabel>
+          <Select
+            id="country"
+            value={values.country}
+            onChange={handleChange("country")}
+          >
+            <option value="">Select</option>
+            <option value="1">Singapore</option>
+            <option value="2">Malaysia</option>
+            <option value="3">Japan</option>
+
+          </Select>
+          <FormHelperText>Please select your country</FormHelperText>
+          <FormErrorMessage>This field is required</FormErrorMessage>
+        </FormControl>
         <Button
           type="button"
           onClick={() => {
             setStep(2);
             setProgress(25);
-
-            console.log(info);
+            values["age"] = parseInt(values["age"]);
+            values["gender"] = parseInt(values["gender"]);
+            values["country"] = parseInt(values["country"]);
             setInfo({ ...info, ...values });
-            console.log(info);
+            console.log(values);
           }}
         >
           Next
