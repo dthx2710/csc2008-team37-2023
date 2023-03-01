@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "venv": "cd scripts && python -m venv venv",
-    "venvp3": "cd scripts && python3 -m venv venv"
+    "pyinit": "cd scripts && python -m venv venv && venv\\Scripts\\activate && pip install -r requirements.txt && deactivate",
+    "pyinitlinux": "cd scripts && python3 -m venv venv && source venv\\bin\\activate && pip install -r requirements.txt && deactivate"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.5.0",
