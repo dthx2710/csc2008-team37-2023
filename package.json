@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "venv": "cd scripts && python -m venv venv",
+    "venvp3": "cd scripts && python3 -m venv venv"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.5.0",
