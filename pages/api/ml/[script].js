@@ -69,10 +69,10 @@ module.exports = async (req, res) => {
 
     let venv_keyword = process.env.OS_VENV == "LINUX" ? "bin" : "Scripts";
     let python_keyword = process.env.OS_VENV == "LINUX" ? "python3" : "python";
-    let source_keyword = process.env.OS_VENV == "LINUX" ? "source" : ""
+    let source_keyword = process.env.OS_VENV == "LINUX" ? "source " : "./"
     // Activate virtual environment
     // const activateEnv = path.join(__dirname, './scripts/venv/Scripts/activate');
-    const activateEnv = path.join(source_keyword, `./scripts/venv/${venv_keyword}/activate`);
+    const activateEnv = source_keyword + `scripts/venv/${venv_keyword}/activate`;
     const { stdout } = await exec(activateEnv);
 
     // // Install required packages
