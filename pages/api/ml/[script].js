@@ -63,16 +63,19 @@ module.exports = async (req, res) => {
         "Frequent Cold": data.frequentCold,
         "Dry Cough": data.dryCough,
         Snoring: data.snoring,
-      }
+      };
       console.log(data);
     }
 
     let venv_keyword = process.env.OS_VENV == "LINUX" ? "bin" : "Scripts";
     let python_keyword = process.env.OS_VENV == "LINUX" ? "python3" : "python";
-    let source_keyword = process.env.OS_VENV == "LINUX" ? "source " : "./"
+    let source_keyword = process.env.OS_VENV == "LINUX" ? "source " : "";
     // Activate virtual environment
     // const activateEnv = path.join(__dirname, './scripts/venv/Scripts/activate');
-    const activateEnv = source_keyword + `scripts/venv/${venv_keyword}/activate`;
+    const activateEnv =
+      source_keyword +
+      path.join(process.cwd(), "scripts", "venv", venv_keyword, "activate");
+    console.log(activateEnv);
     const { stdout } = await exec(activateEnv);
 
     // // Install required packages
@@ -96,9 +99,10 @@ module.exports = async (req, res) => {
     // });
 
     // Run Python script
-    const pythonScript = spawn(`./scripts/venv/${venv_keyword}/${python_keyword}`, [
-      `./scripts/${script}.py`,
-    ]);
+    const pythonScript = spawn(
+      `./scripts/venv/${venv_keyword}/${python_keyword}`,
+      [`./scripts/${script}.py`]
+    );
 
     pythonScript.on("error", (err) => {
       console.error(`Error running Python script: ${err}`);
