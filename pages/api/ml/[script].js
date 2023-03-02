@@ -72,9 +72,10 @@ module.exports = async (req, res) => {
     let source_keyword = process.env.OS_VENV == "LINUX" ? "source " : "";
     // Activate virtual environment
     // const activateEnv = path.join(__dirname, './scripts/venv/Scripts/activate');
+    const cwd = process.cwd();
     const activateEnv =
       source_keyword +
-      path.join(process.cwd(), "scripts", "venv", venv_keyword, "activate");
+      path.resolve(cwd, "scripts", "venv", venv_keyword, "activate");
     console.log(activateEnv);
     const { stdout } = await exec(activateEnv);
 
