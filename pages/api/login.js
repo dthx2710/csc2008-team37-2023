@@ -1,4 +1,4 @@
-import { Users } from "../temp_users";
+import { Users } from "@/src/temp_users";
 export default function handler(req, res) {
     try {
         if (req.method !== 'POST') {
