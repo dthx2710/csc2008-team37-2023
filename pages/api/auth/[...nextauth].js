@@ -40,7 +40,6 @@ export const authOptions = {
     callbacks: {
         async jwt(params) {
             // update token
-            console.log("ASDSJDBJSDBJSD")
             if (params.user?.role) {
                 params.token.role = params.user.role;
             }
@@ -49,7 +48,7 @@ export const authOptions = {
         },
     },
     pages: {
-        signIn: '/auth/signin',
+        signIn: '/login',
         // error: "/auth/error",
         // signOut: "/auth/signout"
     }
