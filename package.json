@@ -21,6 +21,7 @@
     "framer-motion": "^9.0.2",
     "jquery": "^3.6.3",
     "next": "13.1.6",
+    "next-auth": "^4.20.1",
     "python-shell": "^5.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
