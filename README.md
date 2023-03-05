@@ -6,7 +6,7 @@ This project is built and managed by Team37 for CSC2008-Database module.
 
 ## Team37 Members
 Name | Student ID | Github Username
---- | --- | --- | ---
+--- | --- | ---
 **Dylan Tok** | 2101372 | [@dthx2710](https://github.com/dthx2710)
 **Chong Wei Bing** | 1802754 | [@cwb07](https://github.com/cwb07)
 **Xu Xueli** | 2101812 | [@xx-ue](https://github.com/xx-ue)
