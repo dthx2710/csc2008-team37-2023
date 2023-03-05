@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Patient {
-  patient_id String    @id @db.VarChar(10)
+  patient_id Int       @id @default(autoincrement())
   country_id Int
   age        Int
   gender     Int
@@ -29,7 +29,7 @@ model Country {
 }
 
 model External {
-  patient_id           String  @id @db.VarChar(10)
+  patient_id           Int     @id @default(autoincrement())
   air_pollution        Int
   occupational_hazards Int
   patient              Patient @relation(fields: [patient_id], references: [patient_id])
@@ -38,7 +38,7 @@ model External {
 }
 
 model Risk {
-  patient_id String  @id @db.VarChar(10)
+  patient_id Int     @id @default(autoincrement())
   risk       String  @db.VarChar(10)
   patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
@@ -46,7 +46,7 @@ model Risk {
 }
 
 model Internal {
-  patient_id           String  @id @db.VarChar(10)
+  patient_id           Int     @id @default(autoincrement())
   alcohol_use          Int
   dust_allergy         Int
   genetic_risk         Int
@@ -61,7 +61,7 @@ model Internal {
 }
 
 model Symptoms {
-  patient_id              String  @id @db.VarChar(10)
+  patient_id              Int     @id @default(autoincrement())
   chest_pain              Int
   coughing_of_blood       Int
   fatigue                 Int
