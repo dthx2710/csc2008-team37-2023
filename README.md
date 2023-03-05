@@ -21,10 +21,11 @@ Name | Student ID | Github Username
     > `cd gray-app`
 - Install Dependencies & Packages
     > `npm install`
- - Initialize python venv for prediction model api. run "pyinitlinux" instead if on Linux OS
-    > npm run pyinit
+ - Initialize python venv for prediction model api. Use `pyinitlinux` instead if on Linux OS
+    > `npm run pyinit` or `npm run pyinitlinux`
 - Create a `.env` file in the working directory
     - You can use the .env.sample file as a template
+    - Update OS key to `LINUX` if on Linux OS for ml scripts to run properly
 - Build the program
     > `npm run build`
 - Run the program
