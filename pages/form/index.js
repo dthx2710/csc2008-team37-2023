@@ -5,6 +5,7 @@ import PatientForm from "@/src/Form/PatientForm";
 import InternalForm from "@/src/Form/InternalForm";
 import ExternalForm from "@/src/Form/ExternalForm";
 import SymptomForm from "@/src/Form/SymptomForm";
+import ResultForm from "@/src/Form/ResultForm";
 
 const Form = () => {
   const [info, setInfo] = useState({});
@@ -27,8 +28,9 @@ const Form = () => {
       },
       body: JSON.stringify(info),
     }).then((res) => res.json());
+    setInfo({ ...info, risk: risk.result });
     console.log(risk.result)
-    window.alert("You are at a "+risk.result+" risk of having lung cancer.")
+    window.alert("You are at a " + risk.result + " risk of having lung cancer.")
   };
 
   return (
@@ -76,6 +78,11 @@ const Form = () => {
                   setProgress={setProgress}
                   submitForm={handleSubmit}
                 />
+              )}
+              {step === 5 && (
+                <ResultForm
+                  info={info}
+                ></ResultForm>
               )}
             </form>
           </Container>
