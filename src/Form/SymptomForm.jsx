@@ -419,6 +419,8 @@ const SymptomForm = ({ info, setStep, setProgress, setInfo, submitForm }) => {
         <Button
           type="submit"
           onClick={async (e) => {
+            setStep(5);
+            setProgress(100);
             await setInfo({ ...info, ...values });
             submitForm;
           }}

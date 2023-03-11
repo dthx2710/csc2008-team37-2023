@@ -35,10 +35,8 @@ module.exports = async (req, res) => {
     };
 
     if (method === "POST") {
-      console.log("test1");
       data = req.body;
       // data = JSON.parse(req.body);
-      console.log("test2");
       data = {
         Age: data.age,
         Gender: data.gender,
