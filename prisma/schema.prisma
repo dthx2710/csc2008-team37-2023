@@ -32,7 +32,7 @@ model External {
   patient_id           Int     @id @default(autoincrement())
   air_pollution        Int
   occupational_hazards Int
-  patient              Patient @relation(fields: [patient_id], references: [patient_id])
+  patient              Patient @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
 
   @@index([patient_id])
 }
@@ -40,7 +40,7 @@ model External {
 model Risk {
   patient_id Int     @id @default(autoincrement())
   risk       String  @db.VarChar(10)
-  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+  patient    Patient @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
 
   @@index([patient_id])
 }
@@ -55,7 +55,7 @@ model Internal {
   obesity              Int
   active_smoking       Int
   passive_smoking      Int
-  patient              Patient @relation(fields: [patient_id], references: [patient_id])
+  patient              Patient @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
 
   @@index([patient_id])
 }
@@ -73,7 +73,7 @@ model Symptoms {
   frequent_cold           Int
   dry_cough               Int
   snoring                 Int
-  patient                 Patient @relation(fields: [patient_id], references: [patient_id])
+  patient                 Patient @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
 
   @@index([patient_id])
 }
