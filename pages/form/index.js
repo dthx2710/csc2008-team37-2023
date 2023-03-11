@@ -11,16 +11,26 @@ const Form = () => {
   const [info, setInfo] = useState({});
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(0);
+  const [submit, setSubmit] = useState(false);
+  const [result, setResult] = useState(false);
 
   useEffect(() => {
-    setStep(1);
-    setProgress(0);
-  }, []);
+    if (submit) {
+      handleSubmit();
+      setSubmit(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submit]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("submit form")
-    console.log({ info });
+  useEffect(() => {
+    if (result) {
+      createPatient();
+      setResult(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
+
+  const handleSubmit = async () => {
     const risk = await fetch("/api/ml/naive_bayes", {
       method: "POST",
       headers: {
@@ -29,8 +39,80 @@ const Form = () => {
       body: JSON.stringify(info),
     }).then((res) => res.json());
     setInfo({ ...info, risk: risk.result });
-    console.log(risk.result)
-    window.alert("You are at a " + risk.result + " risk of having lung cancer.")
+    setResult(true);
+  };
+
+  const createPatient = async () => {
+    // POST /api/db/patient
+    const patient = await fetch("/api/db/patient", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        age: info.age,
+        gender: info.gender,
+        country_id: info.country,
+      }),
+    }).then((res) => res.json());
+    // POST /api/db/internal
+    fetch(`/api/db/internal/${patient.patient_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        alcohol_use: info.alcoholUse,
+        dust_allergy: info.dustAllergy,
+        genetic_risk: info.geneticRisk,
+        chronic_lung_disease: info.chronicLungDisease,
+        balanced_diet: info.balancedDiet,
+        obesity: info.obesity,
+        active_smoking: info.activeSmoking,
+        passive_smoking: info.passiveSmoking,
+      }),
+    })
+    // // POST /api/db/external
+    fetch(`/api/db/external/${patient.patient_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        air_pollution: info.airPollution,
+        occupational_hazards: info.occupationalHazards,
+      }),
+    })
+    // // POST /api/db/symptoms
+    fetch(`/api/db/symptom/${patient.patient_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chest_pain: info.chestPain,
+        coughing_of_blood: info.coughingOfBlood,
+        fatigue: info.fatigue,
+        weight_loss: info.weightLoss,
+        shortness_of_breath: info.shortnessOfBreath,
+        wheezing: info.wheezing,
+        swallowing_difficulty: info.swallowingDifficulty,
+        clubbing_of_fingernails: info.clubbingOfFingernails,
+        frequent_cold: info.frequentCold,
+        dry_cough: info.dryCough,
+        snoring: info.snoring,
+      }),
+    })
+    // POST /api/db/risk
+    fetch(`/api/db/risk/${patient.patient_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        risk: info.risk,
+      }),
+    });
   };
 
   return (
@@ -76,14 +158,10 @@ const Form = () => {
                   setInfo={setInfo}
                   setStep={setStep}
                   setProgress={setProgress}
-                  submitForm={handleSubmit}
+                  setSubmit={setSubmit}
                 />
               )}
-              {step === 5 && (
-                <ResultForm
-                  info={info}
-                ></ResultForm>
-              )}
+              {step === 5 && <ResultForm info={info}></ResultForm>}
             </form>
           </Container>
         </Center>

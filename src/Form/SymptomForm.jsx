@@ -16,7 +16,7 @@ import {
 
 // step 4
 
-const SymptomForm = ({ info, setStep, setProgress, setInfo, submitForm }) => {
+const SymptomForm = ({ info, setStep, setProgress, setInfo, setSubmit }) => {
   const {
     chestPain,
     coughingOfBlood,
@@ -421,8 +421,8 @@ const SymptomForm = ({ info, setStep, setProgress, setInfo, submitForm }) => {
           onClick={async (e) => {
             setStep(5);
             setProgress(100);
-            await setInfo({ ...info, ...values });
-            submitForm;
+            setInfo({ ...info, ...values });
+            setSubmit(true);
           }}
         >
           Submit

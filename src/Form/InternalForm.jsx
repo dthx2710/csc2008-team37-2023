@@ -313,7 +313,6 @@ const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
             setStep(3);
             setProgress(50);
             setInfo({ ...info, ...values });
-            console.log(values);
           }}
         >
           Next

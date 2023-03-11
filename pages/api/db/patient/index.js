@@ -37,7 +37,6 @@ async function addPatient(res, body) {
     try {
         const patient = await prisma.patient.create({
             data: {
-                patient_id: body.patient_id,
                 age: body.age,
                 gender: body.gender,
                 country_id: body.country_id,

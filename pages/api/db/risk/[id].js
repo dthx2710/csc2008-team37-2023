@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient({ log: ["query"] });
 
 export default async function handler(req, res) {
-    const { id } = req.query;
+    const id = parseInt(req.query.id);
     const body = req.body;
     switch (req.method) {
         case 'GET':

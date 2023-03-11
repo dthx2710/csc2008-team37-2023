@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient({ log: ["query"] });
 
 export default async function handler(req, res) {
-    const { id } = req.query;
+    const id = parseInt(req.query.id);
     const body = req.body;
     switch (req.method) {
         case 'GET':
@@ -18,20 +18,9 @@ export default async function handler(req, res) {
 
 async function readSymptom(res, id) {
     try {
-        const symptom = await prisma.symptom.findUnique({
+        const symptom = await prisma.symptoms.findUnique({
             where: {
                 patient_id: id,
-                chest_pain: body.chest_pain,
-                coughing_of_blood: body.coughing_of_blood,
-                fatigue: body.fatigue,
-                weight_loss: body.weight_loss,
-                shortness_of_breath: body.shortness_of_breath,
-                wheezing: body.wheezing,
-                swallowing_difficulty: body.swallowing_difficulty,
-                clubbing_of_fingernails: body.clubbing_of_fingernails,
-                frequent_cold: body.frequent_cold,
-                dry_cough: body.dry_cough,
-                snoring: body.snoring,
             },
         })
         return res.status(200).json(symptom, { success: true });
@@ -44,10 +33,20 @@ async function readSymptom(res, id) {
 
 async function createSymptom(res, id, body) {
     try {
-        const symptom = await prisma.symptom.create({
+        const symptom = await prisma.symptoms.create({
             data: {
                 patient_id: id,
-                // TODO: symptom data body
+                chest_pain: body.chest_pain,
+                coughing_of_blood: body.coughing_of_blood,
+                fatigue: body.fatigue,
+                weight_loss: body.weight_loss,
+                shortness_of_breath: body.shortness_of_breath,
+                wheezing: body.wheezing,
+                swallowing_difficulty: body.swallowing_difficulty,
+                clubbing_of_fingernails: body.clubbing_of_fingernails,
+                frequent_cold: body.frequent_cold,
+                dry_cough: body.dry_cough,
+                snoring: body.snoring,
             }
         })
         return res.status(200).json(symptom, { success: true });
@@ -60,7 +59,7 @@ async function createSymptom(res, id, body) {
 
 async function updateSymptom(res, id, body) {
     try {
-        const symptom = await prisma.symptom.update({
+        const symptom = await prisma.symptoms.update({
             where: {
                 patient_id: id,
             },
