@@ -143,30 +143,11 @@ const AdminDashboard = () => {
         };
       })
     );
-  // Calculate gender data for Doughnut chart
-  // const genders = patientTable.reduce(
-  //   (acc, curr) => {
-  //     curr.gender === 'Male' ? acc.male++ : acc.female++;
-  //     return acc;
-  //   },
-  //   { male: 0, female: 0 }
-  // );
-  // setGenderData({
-  //   labels: ['Male', 'Female'],
-  //   datasets: [
-  //     {
-  //       data: [genders.male, genders.female],
-  //       backgroundColor: ['#36A2EB', '#FF6384'],
-  //       hoverBackgroundColor: ['#36A2EB', '#FF6384'],
-  //     },
-  //   ],
-  // });
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const gender = {
-    labels: ['Male', 'Female'],
+    labels: ['Female', 'Male'],
     datasets: [
       {
         label: 'Gender',
@@ -178,6 +159,35 @@ const AdminDashboard = () => {
         hoverOffset: 4
       }
     ]
+  };
+  const country = {
+    labels: [
+      'Red',
+      'Blue',
+      'Yellow'
+    ],
+    datasets: [{
+      label: 'Country',
+      data: [300, 50, 100],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)'
+      ],
+      hoverOffset: 4
+    }]
+  };
+  
+  const labels = ['2020', '2021', '2022', '2023', '2024'];
+  const risk = {
+    labels: labels,
+    datasets: [{
+      label: 'Risk of illness',
+      data: [65, 59, 80, 81, 56],
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
+    }]
   };
 
   const columns = {
@@ -403,7 +413,7 @@ const AdminDashboard = () => {
                       <BiWorld size='24px' />
                     </CardHeader>
                     <CardBody>
-                      {/* <Pie options={{ maintainAspectRatio: false }} /> */}
+                      <Pie data={country} options={{ maintainAspectRatio: false }} />
                     </CardBody>
                     <CardFooter>
                       {/* Insert Footer if any */}
@@ -416,7 +426,7 @@ const AdminDashboard = () => {
                       <Heading size='md'> Predictive analysis</Heading>
                     </CardHeader>
                     <CardBody>
-                      {/* <Line options={{ maintainAspectRatio: false }} /> */}
+                      <Line data={risk} options={{ maintainAspectRatio: false }} />
                     </CardBody>
                     <CardFooter>
                       {/* Insert Footer if any */}
@@ -426,6 +436,93 @@ const AdminDashboard = () => {
               </Grid>
             </TabPanel>
             <TabPanel>
+            <Card>
+                <CardHeader>
+                  <Heading size='md'> Filter</Heading>
+                </CardHeader>
+                <CardBody>
+                  <FormControl>
+                    <Grid
+                      templateRows='repeat(3, 1fr)'
+                      templateColumns='repeat(6, 1fr)'
+                      gap={4}
+                    >
+                      <GridItem colSpan={2}>
+                        <FormLabel>Age</FormLabel>
+                        <Select placeholder='Select age range'>
+                          <option>21-25</option>
+                          <option>26-30</option>
+                          <option>31-35</option>
+                          <option>36-40</option>
+                          <option>41-45</option>
+                          <option>46-50</option>
+                        </Select>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <FormLabel>Gender</FormLabel>
+                        <Select placeholder='Select gender'>
+                          <option>Male</option>
+                          <option>Female</option>
+                        </Select>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <FormLabel>Country</FormLabel>
+                        <Select placeholder='Select country'>
+                          <option>Singapore</option>
+                          <option>Malaysia</option>
+                        </Select>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <FormLabel>External</FormLabel>
+                        <Select placeholder='Select options'>
+                          <option>Air Pollution</option>
+                          <option>Occupational Hazards</option>
+                        </Select>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <FormLabel>Internal</FormLabel>
+                        <Select placeholder='Select options'>
+                          <option>Alcohol Use</option>
+                          <option>Dust Allergy</option>
+                          <option>Genetic Risk</option>
+                          <option>Chronic Lung Desease</option>
+                          <option>Balanced Diet</option>
+                          <option>Obesity</option>
+                          <option>Active Smoking</option>
+                          <option>Passive Smoking</option>
+                        </Select>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <FormLabel>Symptoms</FormLabel>
+                        <Select placeholder='Select symptoms'>
+                          <option>Chest Pain</option>
+                          <option>Coughing of Blood</option>
+                          <option>Fatigue</option>
+                          <option>Weight Loss</option>
+                          <option>Shortness of Breath</option>
+                          <option>Wheezing</option>
+                          <option>Swallowing Difficulty</option>
+                          <option>Clubbing of Fingernails</option>
+                          <option>Frequent Cold</option>
+                          <option>Dry Cough</option>
+                          <option>Snoring</option>
+                        </Select>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <FormLabel>Risk</FormLabel>
+                        <Select placeholder='Select risk level'>
+                          <option>High</option>
+                          <option>Medium</option>
+                          <option>Low</option>
+                        </Select>
+                      </GridItem>
+                    </Grid>
+                  </FormControl>
+                </CardBody>
+                <CardFooter>
+                  {/* Insert Footer if any */}
+                </CardFooter>
+              </Card>
               <div style={{ overflowX: "scroll" }}>
                 <DataTable
                   columns={columns.all}
