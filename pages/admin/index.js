@@ -33,6 +33,19 @@ import { useTable } from "react-table";
 import Head from "next/head";
 import axios from "axios";
 
+//Icon & images imports
+import { RiSurveyLine } from "react-icons/ri";
+import { BiWorld } from "react-icons/bi";
+import { ImManWoman } from "react-icons/im";
+import { FiAlertTriangle } from "react-icons/fi";
+import { SlEmotsmile } from "react-icons/sl";
+
+//chart.js
+import { Doughnut, Line, Pie } from 'react-chartjs-2'
+import { Chart, ArcElement, LineController, LineElement, PointElement } from 'chart.js/auto'
+
+Chart.register(ArcElement, LineController, LineElement, PointElement)
+
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +55,7 @@ const AdminDashboard = () => {
   const [externalTable, setExternalTable] = useState([]);
   const [symptomTable, setSymptomTable] = useState([]);
   const [riskTable, setRiskTable] = useState([]);
+  const [genderData, setGenderData] = useState({});
 
   useEffect(() => {
     fetchData();
@@ -129,9 +143,42 @@ const AdminDashboard = () => {
         };
       })
     );
+  // Calculate gender data for Doughnut chart
+  // const genders = patientTable.reduce(
+  //   (acc, curr) => {
+  //     curr.gender === 'Male' ? acc.male++ : acc.female++;
+  //     return acc;
+  //   },
+  //   { male: 0, female: 0 }
+  // );
+  // setGenderData({
+  //   labels: ['Male', 'Female'],
+  //   datasets: [
+  //     {
+  //       data: [genders.male, genders.female],
+  //       backgroundColor: ['#36A2EB', '#FF6384'],
+  //       hoverBackgroundColor: ['#36A2EB', '#FF6384'],
+  //     },
+  //   ],
+  // });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  const gender = {
+    labels: ['Male', 'Female'],
+    datasets: [
+      {
+        label: 'Gender',
+        data: [40, 60],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)'
+        ],
+        hoverOffset: 4
+      }
+    ]
+  };
 
   const columns = {
     all: [
@@ -231,6 +278,23 @@ const AdminDashboard = () => {
                     <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
                   );
                 })}
+                <Td>
+                  <IconButton
+                    onClick={() => handleEdit(row)}
+                    icon={<EditIcon />}
+                    aria-label="Edit"
+                    colorScheme="blue"
+                  />
+                </Td>
+                <Td>
+                  <IconButton
+                    onClick={() => handleDelete(row)}
+                    icon={<DeleteIcon />}
+                    aria-label="Delete"
+                    colorScheme="red"
+                    ml={2}
+                  />
+                </Td>
               </Tr>
             );
           })}
@@ -272,6 +336,7 @@ const AdminDashboard = () => {
       <Box mx="auto" maxWidth="90%">
         <Tabs variant="enclosed" colorScheme="teal">
           <TabList>
+            <Tab>Dashboard</Tab>
             <Tab>Main</Tab>
             <Tab>Patient</Tab>
             <Tab>Internal</Tab>
@@ -281,9 +346,85 @@ const AdminDashboard = () => {
             <Tab>SQL Editor</Tab>
           </TabList>
 
-
           {/* Dashboard Tab */}
           <TabPanels>
+            <TabPanel>
+              <Grid
+                templateRows='repeat(1, 1fr)'
+              >
+                <Card>
+                  <CardHeader>
+                    <Heading size='md'> Summary</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Grid
+                      templateRows='repeat(1, 1fr)'
+                      templateColumns='repeat(6, 1fr)'
+                      gap='6'
+                    >
+                      <GridItem colSpan={2}>
+                        <Box align='center' bg='blue.500' borderRadius='md' p={7} color='white'><RiSurveyLine size='24px' /> xx Responses</Box>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <Box align='center' bg='green.500' borderRadius='md' p={7} color='white'><SlEmotsmile size='24px' /> xx% Low risk</Box>
+                      </GridItem>
+                      <GridItem colSpan={2}>
+                        <Box align='center' bg='red.500' borderRadius='md' p={7} color='white'><FiAlertTriangle size='24px' /> xx% High risk</Box>
+                      </GridItem>
+                    </Grid>
+                  </CardBody>
+                  <CardFooter>
+                    {/* Insert Footer if any */}
+                  </CardFooter>
+                </Card>
+              </Grid>
+              <br></br>
+              <Grid
+                templateRows='repeat(2, 1fr)'
+                templateColumns='repeat(4, 1fr)'
+                gap={4}
+              >
+                <GridItem colSpan={2}>
+                  <Card>
+                    <CardHeader>
+                      <ImManWoman size='20px' />
+                    </CardHeader>
+                    <CardBody>
+                      <Doughnut data={gender} options={{ maintainAspectRatio: false }} />
+                    </CardBody>
+                    <CardFooter>
+                      {/* Insert Footer if any */}
+                    </CardFooter>
+                  </Card>
+                </GridItem>
+                <GridItem colSpan={2}>
+                  <Card>
+                    <CardHeader>
+                      <BiWorld size='24px' />
+                    </CardHeader>
+                    <CardBody>
+                      {/* <Pie options={{ maintainAspectRatio: false }} /> */}
+                    </CardBody>
+                    <CardFooter>
+                      {/* Insert Footer if any */}
+                    </CardFooter>
+                  </Card>
+                </GridItem>
+                <GridItem colSpan={4}>
+                  <Card>
+                    <CardHeader>
+                      <Heading size='md'> Predictive analysis</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      {/* <Line options={{ maintainAspectRatio: false }} /> */}
+                    </CardBody>
+                    <CardFooter>
+                      {/* Insert Footer if any */}
+                    </CardFooter>
+                  </Card>
+                </GridItem>
+              </Grid>
+            </TabPanel>
             <TabPanel>
               <div style={{ overflowX: "scroll" }}>
                 <DataTable
