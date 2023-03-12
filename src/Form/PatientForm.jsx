@@ -68,8 +68,13 @@ const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
           >
             <option value="">Select</option>
             <option value="1">Singapore</option>
-            <option value="2">Malaysia</option>
-            <option value="3">Japan</option>
+            <option value="2">Japan</option>
+            <option value="3">Korea</option>
+            <option value="4">India</option>
+            <option value="5">Malaysia</option>
+            <option value="6">China</option>
+            <option value="7">Indonesia</option>
+            <option value="8">Philippines</option>
 
           </Select>
           <FormHelperText>Please select your country</FormHelperText>
@@ -80,11 +85,10 @@ const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
           onClick={() => {
             setStep(2);
             setProgress(25);
-            values["age"] = parseInt(values["age"]);
-            values["gender"] = parseInt(values["gender"]);
-            values["country"] = parseInt(values["country"]);
+            values["age"] = parseInt(values["age"]) || 1;
+            values["gender"] = parseInt(values["gender"]) || 0;
+            values["country"] = parseInt(values["country"]) || 1;
             setInfo({ ...info, ...values });
-            console.log(values);
           }}
         >
           Next

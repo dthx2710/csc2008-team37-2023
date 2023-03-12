@@ -8,7 +8,6 @@ const ResultForm = ({ info }) => {
     //     setShowResult(!showResult);
     // };
     useEffect(() => {
-        console.log(info);
         // post request to backend to insert new entry into database
     }, [info]);
 

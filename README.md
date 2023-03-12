@@ -17,8 +17,6 @@ Name | Student ID | Github Username
 ## Instructions to run the program locally
 - Clone the repository
     > `git clone`
-- CD to working directory
-    > `cd gray-app`
 - Install Dependencies & Packages
     > `npm install`
  - Initialize python venv for prediction model api. Use `pyinitlinux` instead if on Linux OS
@@ -29,8 +27,20 @@ Name | Student ID | Github Username
 - Build the program
     > `npm run build`
 - Run the program
-    > `npm run dev` or `npm start`
+    > `npm start` 
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+## Others
+- Database visualization GUI Tool
+    > `npx prisma studio`
+- Planetscale (Cloud SQL Database) performance analytics
+    1. Go to [Planetscale](https://planetscale.com/)
+    2. Login using test account credentials
+    3. Go to [project dashboard](https://app.planetscale.com/dolicon/csc2008-team37-2023)
+    4. Navigate to [**Insights* tab](https://app.planetscale.com/dolicon/csc2008-team37-2023/main/insights)
+    5. View analytics (Query latencies, Qps, Rows r/w, etc)
+- Kaggle Dataset Used
+    > https://www.kaggle.com/datasets/thedevastator/cancer-patients-and-air-pollution-a-new-link

@@ -28,9 +28,9 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
   const handleTooltip = (prop, value) => {
     setShowTooltip({ ...showTooltip, [prop]: value });
   };
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+  // const handleChange = (prop) => (event) => {
+  //   setValues({ ...values, [prop]: event.target.value });
+  // };
   const handleSliderChange = (prop) => (val) => {
     setValues({ ...values, [prop]: val });
   };
@@ -118,7 +118,6 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
             setStep(4);
             setProgress(75);
             setInfo({ ...info, ...values });
-            console.log(values);
           }}
         >
           Next
