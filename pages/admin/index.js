@@ -436,6 +436,7 @@ const AdminDashboard = () => {
               <Tab>Symptoms</Tab>
               <Tab>Risk</Tab>
               <Tab>SQL Editor</Tab>
+              <Tab>Correlation Heatmap</Tab>
             </TabList>
 
             {/* Dashboard Tab */}
@@ -677,6 +678,9 @@ const AdminDashboard = () => {
                     {/* Insert Footer if any */}
                   </CardFooter>
                 </Card>
+              </TabPanel>
+              <TabPanel>
+                <img src="Heatmap.png" alt="Correlation Heatmap" width="700" height="600"></img>
               </TabPanel>
             </TabPanels>
           </Tabs>
