@@ -65,7 +65,7 @@ const AdminDashboard = () => {
   const [symptomTable, setSymptomTable] = useState([]);
   const [riskTable, setRiskTable] = useState([]);
   const [genderData, setGenderData] = useState({});
-
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -73,6 +73,16 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     const result = await axios.get("/api/db/patient");
     setData(result.data);
+  };
+
+  const handleDelete = async (id) => {
+    // await axios.delete(`/api/db/patient/${id}`);
+    // fetchData();
+    console.log(id);
+  };
+
+  const handleEdit = async (id) => {
+    console.log(id);
   };
 
   useEffect(() => {
@@ -277,12 +287,52 @@ const AdminDashboard = () => {
       { Header: "Wheezing", accessor: "wheezing" },
       { Header: "Swallowing Difficulty", accessor: "swallowing_difficulty" },
       { Header: "Risk", accessor: "risk" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <Flex>
+            <IconButton
+
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={()=>{handleEdit(row.id)}}
+            />
+            <IconButton
+
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => { handleDelete(row.id) }}
+            />
+          </Flex>
+        ),
+      },
     ],
     patient: [
       { Header: "Patient ID", accessor: "id", sortable: true },
       { Header: "Age", accessor: "age" },
       { Header: "Gender", accessor: "gender" },
       { Header: "Country", accessor: "country" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <Flex>
+            <IconButton
+
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={()=>{handleEdit(row.id)}}
+            />
+            <IconButton
+
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => { handleDelete(row.id) }}
+            />
+          </Flex>
+        ),
+      },
     ],
     internal: [
       { Header: "Patient ID", accessor: "id", sortable: true },
@@ -294,11 +344,51 @@ const AdminDashboard = () => {
       { Header: "Obesity", accessor: "obesity" },
       { Header: "Active Smoking", accessor: "active_smoking" },
       { Header: "Passive Smoking", accessor: "passive_smoking" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <Flex>
+            <IconButton
+
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={()=>{handleEdit(row.id)}}
+            />
+            <IconButton
+
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => { handleDelete(row.id) }}
+            />
+          </Flex>
+        ),
+      },
     ],
     external: [
       { Header: "Patient ID", accessor: "id", sortable: true },
       { Header: "Air Pollution", accessor: "air_pollution" },
       { Header: "Occupational Hazards", accessor: "occupational_hazards" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <Flex>
+            <IconButton
+
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={()=>{handleEdit(row.id)}}
+            />
+            <IconButton
+
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => { handleDelete(row.id) }}
+            />
+          </Flex>
+        ),
+      },
     ],
     symptom: [
       { Header: "Patient ID", accessor: "id", sortable: true },
@@ -316,10 +406,50 @@ const AdminDashboard = () => {
       { Header: "Frequent Cold", accessor: "frequent_cold" },
       { Header: "Dry Cough", accessor: "dry_cough" },
       { Header: "Snoring", accessor: "snoring" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <Flex>
+            <IconButton
+
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={()=>{handleEdit(row.id)}}
+            />
+            <IconButton
+
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => { handleDelete(row.id) }}
+            />
+          </Flex>
+        ),
+      },
     ],
     risk: [
       { Header: "Patient ID", accessor: "id", sortable: true },
       { Header: "Risk", accessor: "risk" },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <Flex>
+            <IconButton
+
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={()=>{handleEdit(row.id)}}
+            />
+            <IconButton
+
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => { handleDelete(row.id) }}
+            />
+          </Flex>
+        ),
+      },
     ],
   };
 
@@ -372,21 +502,6 @@ const AdminDashboard = () => {
                       <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
                     );
                   })}
-                  <Td>
-                    <IconButton
-                      onClick={() => handleEdit(row)}
-                      icon={<EditIcon />}
-                      aria-label="Edit"
-                      colorScheme="blue"
-                    />
-                    <IconButton
-                      onClick={() => handleDelete(row)}
-                      icon={<DeleteIcon />}
-                      aria-label="Delete"
-                      colorScheme="red"
-                      ml={2}
-                    />
-                  </Td>
                 </Tr>
               );
             })}
@@ -423,6 +538,17 @@ const AdminDashboard = () => {
               {pageIndex + 1} of {pageOptions.length}
             </strong>{" "}
           </Text>
+          <Text> | Go to page: </Text>
+          <Input
+            ml={2}
+            w={20}
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0;
+              gotoPage(page);
+            }}
+          />
           <Select
             ml={2}
             w={20}
