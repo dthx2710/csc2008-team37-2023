@@ -28,6 +28,7 @@ import {
   IconButton,
   Flex,
   Text,
+  Spinner
 } from "@chakra-ui/react";
 
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
@@ -145,6 +146,7 @@ const AdminDashboard = () => {
         };
       })
     );
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
@@ -153,7 +155,7 @@ const AdminDashboard = () => {
     datasets: [
       {
         label: 'Gender',
-        data: [40, 60],
+        data: [data.filter(row => { return row.gender === 2 }).length, data.filter(row => { return row.gender === 1 }).length],
         backgroundColor: [
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)'
@@ -164,17 +166,31 @@ const AdminDashboard = () => {
   };
   const country = {
     labels: [
-      'Red',
-      'Blue',
-      'Yellow'
+      'Singapore',
+      'Japan',
+      'South Korea',
+      'India',
+      'Malaysia',
+      'China',
+      'Indonesia',
+      'Philippines',
+      'Vietnam',
+      'Thailand',
     ],
     datasets: [{
       label: 'Country',
-      data: [300, 50, 100],
+      data: [data.filter(row => { return row.country.country_name === 'Singapore' }).length, data.filter(row => { return row.country.country_name === 'Japan' }).length, data.filter(row => { return row.country.country_name === 'South Korea' }).length, data.filter(row => { return row.country.country_name === 'India' }).length, data.filter(row => { return row.country.country_name === 'Malaysia' }).length, data.filter(row => { return row.country.country_name === 'China' }).length, data.filter(row => { return row.country.country_name === 'Indonesia' }).length, data.filter(row => { return row.country.country_name === 'Philippines' }).length, data.filter(row => { return row.country.country_name === 'Vietnam' }).length, data.filter(row => { return row.country.country_name === 'Thailand' }).length],
       backgroundColor: [
         'rgb(255, 99, 132)',
         'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)'
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(255, 159, 64)',
+        'rgb(0, 99, 132)',
+        'rgb(255, 162, 235)',
+        'rgb(155, 205, 86)',
+        'rgb(200, 192, 192)'
       ],
       hoverOffset: 4
     }]
@@ -333,329 +349,341 @@ const AdminDashboard = () => {
             disabled={!canPreviousPage}
             mr={2}>
             {"<"}
-        </Button>
-        <Button
-          onClick={() => nextPage()}
-          disabled={!canNextPage}
-          mr={2}
-        >
-          {">"}
-        </Button>
-        <Button
-          onClick={() => gotoPage(pageCount - 1)}
-          disabled={!canNextPage}
-          mr={2}
-        >
-          {">>"}
-        </Button>
-        <Text>
-          Page{" "}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{" "}
-        </Text>
-        <Select
-          ml={2}
-          w={20}
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </Select>
-      </Flex >
-    </>
+          </Button>
+          <Button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            mr={2}
+          >
+            {">"}
+          </Button>
+          <Button
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+            mr={2}
+          >
+            {">>"}
+          </Button>
+          <Text>
+            Page{" "}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{" "}
+          </Text>
+          <Select
+            ml={2}
+            w={20}
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+            }}
+          >
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </Select>
+        </Flex >
+      </>
     );
   };
 
-const runQuery = async () => {
-  // get query from text area
-  const query = document.getElementById("query").value;
-  // send query to backend
-  const res = await fetch("/api/db/query", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  });
-  // alert response
-  const data = await res.json();
-  if (data.error) {
-    alert(data.error);
-  }
-  if (data.success) {
-    alert(data.success);
-  }
-};
+  const runQuery = async () => {
+    // get query from text area
+    const query = document.getElementById("query").value;
+    // send query to backend
+    const res = await fetch("/api/db/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+    // alert response
+    const data = await res.json();
+    if (data.error) {
+      alert(data.error);
+    }
+    if (data.success) {
+      alert(data.success);
+    }
+  };
 
-return (
-  <>
-    <Head>
-      <title>Admin Dashboard</title>
-      <meta name="description" content="CSC2008 Team37" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
+  return (
+    <>
+      <Head>
+        <title>Admin Dashboard</title>
+        <meta name="description" content="CSC2008 Team37" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-    <Box mx="auto" maxWidth="90%">
-      <Tabs variant="enclosed" colorScheme="teal">
-        <TabList>
-          <Tab>Dashboard</Tab>
-          <Tab>Main</Tab>
-          <Tab>Patient</Tab>
-          <Tab>Internal</Tab>
-          <Tab>External</Tab>
-          <Tab>Symptoms</Tab>
-          <Tab>Risk</Tab>
-          <Tab>SQL Editor</Tab>
-        </TabList>
+      {loading ? (
+        <Flex justify="center" align="center" h="100vh">
+          <Spinner size="xl" />
+        </Flex>
+      ) : (
 
-        {/* Dashboard Tab */}
-        <TabPanels>
-          <TabPanel>
-            <Grid
-              templateRows='repeat(1, 1fr)'
-            >
-              <Card>
-                <CardHeader>
-                  <Heading size='md'> Summary</Heading>
-                </CardHeader>
-                <CardBody>
-                  <Grid
-                    templateRows='repeat(1, 1fr)'
-                    templateColumns='repeat(6, 1fr)'
-                    gap='6'
-                  >
-                    <GridItem colSpan={2}>
-                      <Box align='center' bg='blue.500' borderRadius='md' p={7} color='white'><RiSurveyLine size='24px' /> {allTable.length} Responses</Box>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <Box align='center' bg='green.500' borderRadius='md' p={7} color='white'><SlEmotsmile size='24px' /> xx% Low risk</Box>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <Box align='center' bg='red.500' borderRadius='md' p={7} color='white'><FiAlertTriangle size='24px' /> xx% High risk</Box>
-                    </GridItem>
-                  </Grid>
-                </CardBody>
-                <CardFooter>
-                  {/* Insert Footer if any */}
-                </CardFooter>
-              </Card>
-            </Grid>
-            <br></br>
-            <Grid
-              templateRows='repeat(2, 1fr)'
-              templateColumns='repeat(4, 1fr)'
-              gap={4}
-            >
-              <GridItem colSpan={2}>
+        <Box mx="auto" maxWidth="90%">
+          <Tabs variant="enclosed" colorScheme="teal">
+            <TabList>
+              <Tab>Dashboard</Tab>
+              <Tab>Main</Tab>
+              <Tab>Patient</Tab>
+              <Tab>Internal</Tab>
+              <Tab>External</Tab>
+              <Tab>Symptoms</Tab>
+              <Tab>Risk</Tab>
+              <Tab>SQL Editor</Tab>
+            </TabList>
+
+            {/* Dashboard Tab */}
+            <TabPanels>
+              <TabPanel>
+                <Grid
+                  templateRows='repeat(1, 1fr)'
+                >
+                  <Card>
+                    <CardHeader>
+                      <Heading size='md'> Summary</Heading>
+                    </CardHeader>
+                    <CardBody>
+                      <Grid
+                        templateRows='repeat(1, 1fr)'
+                        templateColumns='repeat(6, 1fr)'
+                        gap='6'
+                      >
+                        <GridItem colSpan={2}>
+                          <Box align='center' bg='blue.500' borderRadius='md' p={7} color='white'><RiSurveyLine size='24px' /> {data.length} Responses</Box>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <Box align='center' bg='green.500' borderRadius='md' p={7} color='white'><SlEmotsmile size='24px' /> {
+                            data.filter((row) => row.risk.risk === 'Low').length / data.length * 100
+                          }% Low risk</Box>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <Box align='center' bg='red.500' borderRadius='md' p={7} color='white'><FiAlertTriangle size='24px' /> {
+                            data.filter((row) => row.risk.risk === 'High').length / data.length * 100
+                          }
+                            % High risk</Box>
+                        </GridItem>
+                      </Grid>
+                    </CardBody>
+                    <CardFooter>
+                      {/* Insert Footer if any */}
+                    </CardFooter>
+                  </Card>
+                </Grid>
+                <br></br>
+                <Grid
+                  templateRows='repeat(2, 1fr)'
+                  templateColumns='repeat(4, 1fr)'
+                  gap={4}
+                >
+                  <GridItem colSpan={2}>
+                    <Card>
+                      <CardHeader>
+                        <ImManWoman size='20px' />
+                      </CardHeader>
+                      <CardBody>
+                        <Doughnut data={gender} options={{ maintainAspectRatio: false }} />
+                      </CardBody>
+                      <CardFooter>
+                        {/* Insert Footer if any */}
+                      </CardFooter>
+                    </Card>
+                  </GridItem>
+                  <GridItem colSpan={2}>
+                    <Card>
+                      <CardHeader>
+                        <BiWorld size='24px' />
+                      </CardHeader>
+                      <CardBody>
+                        <Pie data={country} options={{ maintainAspectRatio: false }} />
+                      </CardBody>
+                      <CardFooter>
+                        {/* Insert Footer if any */}
+                      </CardFooter>
+                    </Card>
+                  </GridItem>
+                  <GridItem colSpan={4}>
+                    <Card>
+                      <CardHeader>
+                        <Heading size='md'> Predictive analysis</Heading>
+                      </CardHeader>
+                      <CardBody>
+                        <Line data={risk} options={{ maintainAspectRatio: false }} />
+                      </CardBody>
+                      <CardFooter>
+                        {/* Insert Footer if any */}
+                      </CardFooter>
+                    </Card>
+                  </GridItem>
+                </Grid>
+              </TabPanel>
+              <TabPanel>
                 <Card>
                   <CardHeader>
-                    <ImManWoman size='20px' />
+                    <Heading size='md'> Filter</Heading>
                   </CardHeader>
                   <CardBody>
-                    <Doughnut data={gender} options={{ maintainAspectRatio: false }} />
+                    <FormControl>
+                      <Grid
+                        templateRows='repeat(3, 1fr)'
+                        templateColumns='repeat(6, 1fr)'
+                        gap={4}
+                      >
+                        <GridItem colSpan={2}>
+                          <FormLabel>Age</FormLabel>
+                          <Select placeholder='Select age range'>
+                            <option>21-25</option>
+                            <option>26-30</option>
+                            <option>31-35</option>
+                            <option>36-40</option>
+                            <option>41-45</option>
+                            <option>46-50</option>
+                          </Select>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>Gender</FormLabel>
+                          <Select placeholder='Select gender'>
+                            <option>Male</option>
+                            <option>Female</option>
+                          </Select>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>Country</FormLabel>
+                          <Select placeholder='Select country'>
+                            <option>Singapore</option>
+                            <option>Malaysia</option>
+                          </Select>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>External</FormLabel>
+                          <Select placeholder='Select options'>
+                            <option>Air Pollution</option>
+                            <option>Occupational Hazards</option>
+                          </Select>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>Internal</FormLabel>
+                          <Select placeholder='Select options'>
+                            <option>Alcohol Use</option>
+                            <option>Dust Allergy</option>
+                            <option>Genetic Risk</option>
+                            <option>Chronic Lung Desease</option>
+                            <option>Balanced Diet</option>
+                            <option>Obesity</option>
+                            <option>Active Smoking</option>
+                            <option>Passive Smoking</option>
+                          </Select>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>Symptoms</FormLabel>
+                          <Select placeholder='Select symptoms'>
+                            <option>Chest Pain</option>
+                            <option>Coughing of Blood</option>
+                            <option>Fatigue</option>
+                            <option>Weight Loss</option>
+                            <option>Shortness of Breath</option>
+                            <option>Wheezing</option>
+                            <option>Swallowing Difficulty</option>
+                            <option>Clubbing of Fingernails</option>
+                            <option>Frequent Cold</option>
+                            <option>Dry Cough</option>
+                            <option>Snoring</option>
+                          </Select>
+                        </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>Risk</FormLabel>
+                          <Select placeholder='Select risk level'>
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                          </Select>
+                        </GridItem>
+                      </Grid>
+                    </FormControl>
                   </CardBody>
                   <CardFooter>
                     {/* Insert Footer if any */}
                   </CardFooter>
                 </Card>
-              </GridItem>
-              <GridItem colSpan={2}>
-                <Card>
-                  <CardHeader>
-                    <BiWorld size='24px' />
-                  </CardHeader>
-                  <CardBody>
-                    <Pie data={country} options={{ maintainAspectRatio: false }} />
-                  </CardBody>
-                  <CardFooter>
-                    {/* Insert Footer if any */}
-                  </CardFooter>
-                </Card>
-              </GridItem>
-              <GridItem colSpan={4}>
-                <Card>
-                  <CardHeader>
-                    <Heading size='md'> Predictive analysis</Heading>
-                  </CardHeader>
-                  <CardBody>
-                    <Line data={risk} options={{ maintainAspectRatio: false }} />
-                  </CardBody>
-                  <CardFooter>
-                    {/* Insert Footer if any */}
-                  </CardFooter>
-                </Card>
-              </GridItem>
-            </Grid>
-          </TabPanel>
-          <TabPanel>
-            <Card>
-              <CardHeader>
-                <Heading size='md'> Filter</Heading>
-              </CardHeader>
-              <CardBody>
-                <FormControl>
-                  <Grid
-                    templateRows='repeat(3, 1fr)'
-                    templateColumns='repeat(6, 1fr)'
-                    gap={4}
-                  >
-                    <GridItem colSpan={2}>
-                      <FormLabel>Age</FormLabel>
-                      <Select placeholder='Select age range'>
-                        <option>21-25</option>
-                        <option>26-30</option>
-                        <option>31-35</option>
-                        <option>36-40</option>
-                        <option>41-45</option>
-                        <option>46-50</option>
-                      </Select>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <FormLabel>Gender</FormLabel>
-                      <Select placeholder='Select gender'>
-                        <option>Male</option>
-                        <option>Female</option>
-                      </Select>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <FormLabel>Country</FormLabel>
-                      <Select placeholder='Select country'>
-                        <option>Singapore</option>
-                        <option>Malaysia</option>
-                      </Select>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <FormLabel>External</FormLabel>
-                      <Select placeholder='Select options'>
-                        <option>Air Pollution</option>
-                        <option>Occupational Hazards</option>
-                      </Select>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <FormLabel>Internal</FormLabel>
-                      <Select placeholder='Select options'>
-                        <option>Alcohol Use</option>
-                        <option>Dust Allergy</option>
-                        <option>Genetic Risk</option>
-                        <option>Chronic Lung Desease</option>
-                        <option>Balanced Diet</option>
-                        <option>Obesity</option>
-                        <option>Active Smoking</option>
-                        <option>Passive Smoking</option>
-                      </Select>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <FormLabel>Symptoms</FormLabel>
-                      <Select placeholder='Select symptoms'>
-                        <option>Chest Pain</option>
-                        <option>Coughing of Blood</option>
-                        <option>Fatigue</option>
-                        <option>Weight Loss</option>
-                        <option>Shortness of Breath</option>
-                        <option>Wheezing</option>
-                        <option>Swallowing Difficulty</option>
-                        <option>Clubbing of Fingernails</option>
-                        <option>Frequent Cold</option>
-                        <option>Dry Cough</option>
-                        <option>Snoring</option>
-                      </Select>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                      <FormLabel>Risk</FormLabel>
-                      <Select placeholder='Select risk level'>
-                        <option>High</option>
-                        <option>Medium</option>
-                        <option>Low</option>
-                      </Select>
-                    </GridItem>
-                  </Grid>
-                </FormControl>
-              </CardBody>
-              <CardFooter>
-                {/* Insert Footer if any */}
-              </CardFooter>
-            </Card>
-            <div style={{ overflowX: "scroll" }}>
-              <DataTable
-                columns={columns.all}
-                data={allTable}
-                keyField="id"
-              />
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <DataTable
-              columns={columns.patient}
-              data={patientTable}
-              keyField="id"
-            />
-          </TabPanel>
-          <TabPanel>
-            <DataTable
-              columns={columns.internal}
-              data={internalTable}
-              keyField="id"
-            />
-          </TabPanel>
-          <TabPanel>
-            <DataTable
-              columns={columns.external}
-              data={externalTable}
-              keyField="id"
-            />
-          </TabPanel>
-          <TabPanel>
-            <DataTable
-              columns={columns.symptom}
-              data={symptomTable}
-              keyField="id"
-            />
-          </TabPanel>
-          <TabPanel>
-            <DataTable
-              columns={columns.risk}
-              data={riskTable}
-              keyField="id"
-            />
-          </TabPanel>
+                <div style={{ overflowX: "scroll" }}>
+                  <DataTable
+                    columns={columns.all}
+                    data={allTable}
+                    keyField="id"
+                  />
+                </div>
+              </TabPanel>
+              <TabPanel>
+                <DataTable
+                  columns={columns.patient}
+                  data={patientTable}
+                  keyField="id"
+                />
+              </TabPanel>
+              <TabPanel>
+                <DataTable
+                  columns={columns.internal}
+                  data={internalTable}
+                  keyField="id"
+                />
+              </TabPanel>
+              <TabPanel>
+                <DataTable
+                  columns={columns.external}
+                  data={externalTable}
+                  keyField="id"
+                />
+              </TabPanel>
+              <TabPanel>
+                <DataTable
+                  columns={columns.symptom}
+                  data={symptomTable}
+                  keyField="id"
+                />
+              </TabPanel>
+              <TabPanel>
+                <DataTable
+                  columns={columns.risk}
+                  data={riskTable}
+                  keyField="id"
+                />
+              </TabPanel>
 
-          {/* SQL Editor Tab */}
-          <TabPanel id='sql-editor'>
-            <Box>
-              <textarea
-                id="query"
-                style={{ width: "100%", height: "100%" }}
-                placeholder="e.g. SELECT * FROM Patient;"
-              ></textarea>
-            </Box>
-            <Button colorScheme="teal" variant="outline" onClick={runQuery}>
-              Run Query
-            </Button>
-            <Card>
-              <CardHeader>
-                <Heading size='md'> Result</Heading>
-              </CardHeader>
-              <CardBody>
-                {/* TODO */}
-              </CardBody>
-              <CardFooter>
-                {/* Insert Footer if any */}
-              </CardFooter>
-            </Card>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Box>
-  </>
-);
+              {/* SQL Editor Tab */}
+              <TabPanel id='sql-editor'>
+                <Box>
+                  <textarea
+                    id="query"
+                    style={{ width: "100%", height: "100%" }}
+                    placeholder="e.g. SELECT * FROM Patient;"
+                  ></textarea>
+                </Box>
+                <Button colorScheme="teal" variant="outline" onClick={runQuery}>
+                  Run Query
+                </Button>
+                <Card>
+                  <CardHeader>
+                    <Heading size='md'> Result</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    {/* TODO */}
+                  </CardBody>
+                  <CardFooter>
+                    {/* Insert Footer if any */}
+                  </CardFooter>
+                </Card>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
+      )};
+    </>
+  );
 };
 
 export default AdminDashboard;
