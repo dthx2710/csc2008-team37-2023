@@ -11,7 +11,13 @@ export default withAuth(
     {
         callbacks: {
             authorized({ token }) {
-                return token?.role === "admin";
+                if (token) {
+                    console.log("true")
+                    return true
+                }
+                else {
+                    return false
+                }
             },
         },
     }
