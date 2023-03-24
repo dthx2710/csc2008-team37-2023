@@ -28,7 +28,7 @@ import {
   IconButton,
   Flex,
   Text,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
@@ -44,10 +44,16 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { SlEmotsmile } from "react-icons/sl";
 
 //chart.js
-import { Doughnut, Line, Pie } from 'react-chartjs-2'
-import { Chart, ArcElement, LineController, LineElement, PointElement } from 'chart.js/auto'
+import { Doughnut, Line, Pie } from "react-chartjs-2";
+import {
+  Chart,
+  ArcElement,
+  LineController,
+  LineElement,
+  PointElement,
+} from "chart.js/auto";
 
-Chart.register(ArcElement, LineController, LineElement, PointElement)
+Chart.register(ArcElement, LineController, LineElement, PointElement);
 
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
@@ -151,61 +157,100 @@ const AdminDashboard = () => {
   }, [data]);
 
   const gender = {
-    labels: ['Female', 'Male'],
+    labels: ["Female", "Male"],
     datasets: [
       {
-        label: 'Gender',
-        data: [data.filter(row => { return row.gender === 2 }).length, data.filter(row => { return row.gender === 1 }).length],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)'
+        label: "Gender",
+        data: [
+          data.filter((row) => {
+            return row.gender === 2;
+          }).length,
+          data.filter((row) => {
+            return row.gender === 1;
+          }).length,
         ],
-        hoverOffset: 4
-      }
-    ]
+        backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)"],
+        hoverOffset: 4,
+      },
+    ],
   };
   const country = {
     labels: [
-      'Singapore',
-      'Japan',
-      'South Korea',
-      'India',
-      'Malaysia',
-      'China',
-      'Indonesia',
-      'Philippines',
-      'Vietnam',
-      'Thailand',
+      "Singapore",
+      "Japan",
+      "South Korea",
+      "India",
+      "Malaysia",
+      "China",
+      "Indonesia",
+      "Philippines",
+      "Vietnam",
+      "Thailand",
     ],
-    datasets: [{
-      label: 'Country',
-      data: [data.filter(row => { return row.country.country_name === 'Singapore' }).length, data.filter(row => { return row.country.country_name === 'Japan' }).length, data.filter(row => { return row.country.country_name === 'South Korea' }).length, data.filter(row => { return row.country.country_name === 'India' }).length, data.filter(row => { return row.country.country_name === 'Malaysia' }).length, data.filter(row => { return row.country.country_name === 'China' }).length, data.filter(row => { return row.country.country_name === 'Indonesia' }).length, data.filter(row => { return row.country.country_name === 'Philippines' }).length, data.filter(row => { return row.country.country_name === 'Vietnam' }).length, data.filter(row => { return row.country.country_name === 'Thailand' }).length],
-      backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(153, 102, 255)',
-        'rgb(255, 159, 64)',
-        'rgb(0, 99, 132)',
-        'rgb(255, 162, 235)',
-        'rgb(155, 205, 86)',
-        'rgb(200, 192, 192)'
-      ],
-      hoverOffset: 4
-    }]
+    datasets: [
+      {
+        label: "Country",
+        data: [
+          data.filter((row) => {
+            return row.country.country_name === "Singapore";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "Japan";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "South Korea";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "India";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "Malaysia";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "China";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "Indonesia";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "Philippines";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "Vietnam";
+          }).length,
+          data.filter((row) => {
+            return row.country.country_name === "Thailand";
+          }).length,
+        ],
+        backgroundColor: [
+          "rgb(255, 99, 132)",
+          "rgb(54, 162, 235)",
+          "rgb(255, 205, 86)",
+          "rgb(75, 192, 192)",
+          "rgb(153, 102, 255)",
+          "rgb(255, 159, 64)",
+          "rgb(0, 99, 132)",
+          "rgb(255, 162, 235)",
+          "rgb(155, 205, 86)",
+          "rgb(200, 192, 192)",
+        ],
+        hoverOffset: 4,
+      },
+    ],
   };
 
-  const labels = ['2020', '2021', '2022', '2023', '2024'];
+  const labels = ["2020", "2021", "2022", "2023", "2024"];
   const risk = {
     labels: labels,
-    datasets: [{
-      label: 'Risk of illness',
-      data: [65, 59, 80, 81, 56],
-      fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1
-    }]
+    datasets: [
+      {
+        label: "Risk of illness",
+        data: [65, 59, 80, 81, 56],
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
   };
 
   const columns = {
@@ -279,7 +324,12 @@ const AdminDashboard = () => {
   };
 
   const DataTable = ({ columns, data }) => {
-    const { getTableProps, getTableBodyProps, headerGroups, prepareRow, page,
+    const {
+      getTableProps,
+      getTableBodyProps,
+      headerGroups,
+      prepareRow,
+      page,
       canPreviousPage,
       canNextPage,
       pageOptions,
@@ -287,12 +337,16 @@ const AdminDashboard = () => {
       gotoPage,
       nextPage,
       previousPage,
-      setPageSize, state: { pageIndex, pageSize }, } =
-      useTable({
+      setPageSize,
+      state: { pageIndex, pageSize },
+    } = useTable(
+      {
         columns,
         data,
         initialState: { pageIndex: 0, pageSize: 10 },
-      }, usePagination);
+      },
+      usePagination
+    );
 
     return (
       <>
@@ -301,7 +355,9 @@ const AdminDashboard = () => {
             {headerGroups.map((headerGroup) => (
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <Th {...column.getHeaderProps()}>{column.render("Header")}</Th>
+                  <Th {...column.getHeaderProps()}>
+                    {column.render("Header")}
+                  </Th>
                 ))}
               </Tr>
             ))}
@@ -347,14 +403,11 @@ const AdminDashboard = () => {
           <Button
             onClick={() => previousPage()}
             disabled={!canPreviousPage}
-            mr={2}>
-            {"<"}
-          </Button>
-          <Button
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
             mr={2}
           >
+            {"<"}
+          </Button>
+          <Button onClick={() => nextPage()} disabled={!canNextPage} mr={2}>
             {">"}
           </Button>
           <Button
@@ -384,7 +437,7 @@ const AdminDashboard = () => {
               </option>
             ))}
           </Select>
-        </Flex >
+        </Flex>
       </>
     );
   };
@@ -418,13 +471,11 @@ const AdminDashboard = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       {loading ? (
         <Flex justify="center" align="center" h="100vh">
           <Spinner size="xl" />
         </Flex>
       ) : (
-
         <Box mx="auto" maxWidth="90%">
           <Tabs variant="enclosed" colorScheme="teal">
             <TabList>
@@ -442,83 +493,115 @@ const AdminDashboard = () => {
             {/* Dashboard Tab */}
             <TabPanels>
               <TabPanel>
-                <Grid
-                  templateRows='repeat(1, 1fr)'
-                >
+                <Grid templateRows="repeat(1, 1fr)">
                   <Card>
                     <CardHeader>
-                      <Heading size='md'> Summary</Heading>
+                      <Heading size="md"> Summary</Heading>
                     </CardHeader>
                     <CardBody>
                       <Grid
-                        templateRows='repeat(1, 1fr)'
-                        templateColumns='repeat(6, 1fr)'
-                        gap='6'
+                        templateRows="repeat(1, 1fr)"
+                        templateColumns="repeat(6, 1fr)"
+                        gap="6"
                       >
                         <GridItem colSpan={2}>
-                          <Box align='center' bg='blue.500' borderRadius='md' p={7} color='white'><RiSurveyLine size='24px' /> {data.length} Responses</Box>
+                          <Box
+                            align="center"
+                            bg="blue.500"
+                            borderRadius="md"
+                            p={7}
+                            color="white"
+                          >
+                            <RiSurveyLine size="24px" /> {data.length} Responses
+                          </Box>
                         </GridItem>
                         <GridItem colSpan={2}>
-                          <Box align='center' bg='green.500' borderRadius='md' p={7} color='white'><SlEmotsmile size='24px' /> {
-                            data.filter((row) => row.risk.risk === 'Low').length / data.length * 100
-                          }% Low risk</Box>
+                          <Box
+                            align="center"
+                            bg="green.500"
+                            borderRadius="md"
+                            p={7}
+                            color="white"
+                          >
+                            <SlEmotsmile size="24px" />{" "}
+                            {(
+                              (data.filter((row) => row.risk.risk === "Low")
+                                .length /
+                                data.length) *
+                              100
+                            ).toFixed(2)}
+                            % Low risk
+                          </Box>
                         </GridItem>
                         <GridItem colSpan={2}>
-                          <Box align='center' bg='red.500' borderRadius='md' p={7} color='white'><FiAlertTriangle size='24px' /> {
-                            data.filter((row) => row.risk.risk === 'High').length / data.length * 100
-                          }
-                            % High risk</Box>
+                          <Box
+                            align="center"
+                            bg="red.500"
+                            borderRadius="md"
+                            p={7}
+                            color="white"
+                          >
+                            <FiAlertTriangle size="24px" />{" "}
+                            {(
+                              (data.filter((row) => row.risk.risk === "High")
+                                .length /
+                                data.length) *
+                              100
+                            ).toFixed(2)}
+                            % High risk
+                          </Box>
                         </GridItem>
                       </Grid>
                     </CardBody>
-                    <CardFooter>
-                      {/* Insert Footer if any */}
-                    </CardFooter>
+                    <CardFooter>{/* Insert Footer if any */}</CardFooter>
                   </Card>
                 </Grid>
                 <br></br>
                 <Grid
-                  templateRows='repeat(2, 1fr)'
-                  templateColumns='repeat(4, 1fr)'
+                  templateRows="repeat(2, 1fr)"
+                  templateColumns="repeat(4, 1fr)"
                   gap={4}
                 >
                   <GridItem colSpan={2}>
                     <Card>
                       <CardHeader>
-                        <ImManWoman size='20px' />
+                        <ImManWoman size="20px" />
                       </CardHeader>
                       <CardBody>
-                        <Doughnut data={gender} options={{ maintainAspectRatio: false }} />
+                        <Doughnut
+                          data={gender}
+                          options={{ maintainAspectRatio: false }}
+                        />
                       </CardBody>
-                      <CardFooter>
-                        {/* Insert Footer if any */}
-                      </CardFooter>
+                      <CardFooter>{/* Insert Footer if any */}</CardFooter>
                     </Card>
                   </GridItem>
                   <GridItem colSpan={2}>
                     <Card>
                       <CardHeader>
-                        <BiWorld size='24px' />
+                        <BiWorld size="24px" />
                       </CardHeader>
                       <CardBody>
-                        <Pie data={country} options={{ maintainAspectRatio: false }} />
+                        <Pie
+                          data={country}
+                          options={{ maintainAspectRatio: false }}
+                        />
                       </CardBody>
-                      <CardFooter>
-                        {/* Insert Footer if any */}
-                      </CardFooter>
+                      <CardFooter>{/* Insert Footer if any */}</CardFooter>
                     </Card>
                   </GridItem>
                   <GridItem colSpan={4}>
                     <Card>
                       <CardHeader>
-                        <Heading size='md'> Predictive analysis</Heading>
+                        <Heading size="md"> Predictive analysis</Heading>
                       </CardHeader>
                       <CardBody>
-                        <Line data={risk} options={{ maintainAspectRatio: false }} />
+                        <Line
+                          data={risk}
+                          options={{ maintainAspectRatio: false }}
+                        />
                       </CardBody>
-                      <CardFooter>
-                        {/* Insert Footer if any */}
-                      </CardFooter>
+                      <CardFooter>{/* Insert Footer if any */}</CardFooter>
                     </Card>
                   </GridItem>
                 </Grid>
@@ -526,18 +609,18 @@ const AdminDashboard = () => {
               <TabPanel>
                 <Card>
                   <CardHeader>
-                    <Heading size='md'> Filter</Heading>
+                    <Heading size="md"> Filter</Heading>
                   </CardHeader>
                   <CardBody>
                     <FormControl>
                       <Grid
-                        templateRows='repeat(3, 1fr)'
-                        templateColumns='repeat(6, 1fr)'
+                        templateRows="repeat(3, 1fr)"
+                        templateColumns="repeat(6, 1fr)"
                         gap={4}
                       >
                         <GridItem colSpan={2}>
                           <FormLabel>Age</FormLabel>
-                          <Select placeholder='Select age range'>
+                          <Select placeholder="Select age range">
                             <option>21-25</option>
                             <option>26-30</option>
                             <option>31-35</option>
@@ -548,28 +631,28 @@ const AdminDashboard = () => {
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Gender</FormLabel>
-                          <Select placeholder='Select gender'>
+                          <Select placeholder="Select gender">
                             <option>Male</option>
                             <option>Female</option>
                           </Select>
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Country</FormLabel>
-                          <Select placeholder='Select country'>
+                          <Select placeholder="Select country">
                             <option>Singapore</option>
                             <option>Malaysia</option>
                           </Select>
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>External</FormLabel>
-                          <Select placeholder='Select options'>
+                          <Select placeholder="Select options">
                             <option>Air Pollution</option>
                             <option>Occupational Hazards</option>
                           </Select>
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Internal</FormLabel>
-                          <Select placeholder='Select options'>
+                          <Select placeholder="Select options">
                             <option>Alcohol Use</option>
                             <option>Dust Allergy</option>
                             <option>Genetic Risk</option>
@@ -582,7 +665,7 @@ const AdminDashboard = () => {
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Symptoms</FormLabel>
-                          <Select placeholder='Select symptoms'>
+                          <Select placeholder="Select symptoms">
                             <option>Chest Pain</option>
                             <option>Coughing of Blood</option>
                             <option>Fatigue</option>
@@ -598,7 +681,7 @@ const AdminDashboard = () => {
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Risk</FormLabel>
-                          <Select placeholder='Select risk level'>
+                          <Select placeholder="Select risk level">
                             <option>High</option>
                             <option>Medium</option>
                             <option>Low</option>
@@ -607,9 +690,7 @@ const AdminDashboard = () => {
                       </Grid>
                     </FormControl>
                   </CardBody>
-                  <CardFooter>
-                    {/* Insert Footer if any */}
-                  </CardFooter>
+                  <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
                 <div style={{ overflowX: "scroll" }}>
                   <DataTable
@@ -656,7 +737,7 @@ const AdminDashboard = () => {
               </TabPanel>
 
               {/* SQL Editor Tab */}
-              <TabPanel id='sql-editor'>
+              <TabPanel id="sql-editor">
                 <Box>
                   <textarea
                     id="query"
@@ -669,23 +750,25 @@ const AdminDashboard = () => {
                 </Button>
                 <Card>
                   <CardHeader>
-                    <Heading size='md'> Result</Heading>
+                    <Heading size="md"> Result</Heading>
                   </CardHeader>
-                  <CardBody>
-                    {/* TODO */}
-                  </CardBody>
-                  <CardFooter>
-                    {/* Insert Footer if any */}
-                  </CardFooter>
+                  <CardBody>{/* TODO */}</CardBody>
+                  <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
               </TabPanel>
               <TabPanel>
-                <img src="Heatmap.png" alt="Correlation Heatmap" width="700" height="600"></img>
+                <img
+                  src="Heatmap.png"
+                  alt="Correlation Heatmap"
+                  width="700"
+                  height="600"
+                ></img>
               </TabPanel>
             </TabPanels>
           </Tabs>
         </Box>
-      )};
+      )}
+      ;
     </>
   );
 };
