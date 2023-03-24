@@ -23,12 +23,12 @@ const Form = () => {
   }, [submit]);
 
   useEffect(() => {
-    if (result) {
+    if (result && info.risk !== undefined) {
       createPatient();
       setResult(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result]);
+  }, [result, info.risk]);
 
   const handleSubmit = async () => {
     const risk = await fetch("/api/ml/naive_bayes", {
