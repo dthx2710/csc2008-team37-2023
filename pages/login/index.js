@@ -30,7 +30,7 @@ function Login() {
     e.preventDefault()
     setPageState(old => ({ ...old, processing: true, error: '' }))
 
-    const res = await signIn("credentials", { email: userInfo.email, password: userInfo.password, redirect: false })
+    const res = await signIn("credentials", { username: userInfo.username, password: userInfo.password, redirect: false })
     console.log(res)
     if (res.ok) {
       // Authenticate user
@@ -64,13 +64,13 @@ function Login() {
           <Box p={4}>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <label style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginBottom: "1rem" }}>
-                <h1 style={{ marginBottom: "0.5rem" }}>Email</h1>
+                <h1 style={{ marginBottom: "0.5rem" }}>Username</h1>
                 <input
-                  value={userInfo.email}
-                  type="email"
+                  value={userInfo.username}
+                  type="text"
                   placeholder=""
                   onChange={({ target }) =>
-                    setUserInfo({ ...userInfo, email: target.value })
+                    setUserInfo({ ...userInfo, username: target.value })
                   }
                   style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc", width: "100%" }}
                 />

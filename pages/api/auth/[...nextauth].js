@@ -18,14 +18,14 @@ export const authOptions = {
             credentials: {},
 
             async authorize(credentials, req) {
-                const { email, password } = credentials
+                const { username, password } = credentials
                 const res = await fetch("http://localhost:3000/api/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        email,
+                        username,
                         password,
                     }),
                 });
@@ -40,10 +40,6 @@ export const authOptions = {
 
     callbacks: {
         async jwt(params) {
-            // update token
-            if (params.user?.role) {
-                params.token.role = params.user.role;
-            }
             // return final_token
             return params.token;
         },
