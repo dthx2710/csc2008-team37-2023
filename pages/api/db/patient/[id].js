@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient({ log: ["query"] });
 
 export default async function handler(req, res) {
-    const { id } = parseInt(req.query.id);
+    const id = parseInt(req.query.id);
     const body = req.body;
     switch (req.method) {
         case 'GET':
@@ -59,6 +59,7 @@ async function updatePatient(res, id, body) {
 
 async function deletePatient(res, id) {
     try {
+        console.log('deleting patient', id)
         const patient = await prisma.patient.delete({
             where: {    
                 patient_id: id,

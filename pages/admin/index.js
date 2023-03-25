@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Card,
   CardHeader,
@@ -42,7 +42,6 @@ import { BiWorld } from "react-icons/bi";
 import { ImManWoman } from "react-icons/im";
 import { FiAlertTriangle } from "react-icons/fi";
 import { SlEmotsmile } from "react-icons/sl";
-import styled from "styled-components";
 
 //chart.js
 import { Doughnut, Line, Pie } from "react-chartjs-2";
@@ -59,13 +58,6 @@ Chart.register(ArcElement, LineController, LineElement, PointElement);
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [allTable, setAllTable] = useState([]);
-  const [patientTable, setPatientTable] = useState([]);
-  const [internalTable, setInternalTable] = useState([]);
-  const [externalTable, setExternalTable] = useState([]);
-  const [symptomTable, setSymptomTable] = useState([]);
-  const [riskTable, setRiskTable] = useState([]);
-  const [genderData, setGenderData] = useState({});
 
   const fetchData = async () => {
     const result = await axios.get("/api/db/patient");
@@ -76,93 +68,60 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  const memoizedData = useMemo(() => data, [data]);
-
-  const handleDelete = async (id) => {
+  const handleDelete = useCallback(async (id) => {
     const del = data[id].patient_id;
-    await axios.delete(`/api/db/patient/${id}`);
-    fetchData();
-  };
+    console.log(del)
+    if (del) {
+      // prompt user to confirm delete
+      const confirm = window.confirm(
+        "Are you sure you want to delete this patient?"
+      );
+      if (!confirm) return;
+      await axios.delete(`/api/db/patient/${del}`);
+      fetchData();
+      // notify user of success
+      alert("Patient deleted successfully");
+    }
+    else{
+      alert("Patient not found");
+    }
+  }, [data]);
 
-  useEffect(() => {
-    setPatientTable(
-      memoizedData.map((patient) => {
+  const tableData = useMemo(() => 
+  {
+    if (data.length > 0) {
+      setLoading(false);
+      return data.map((patient) => {
         return {
           id: patient.patient_id,
           age: patient.age,
           gender: patient.gender === 1 ? "Male" : "Female",
           country: patient.country.country_name,
-        };
-      })
-    );
-    setInternalTable(
-      memoizedData.map((patient) => {
-        const internal = patient.Internal;
-        return {
-          id: patient.patient_id,
-          alcohol_use: internal.alcohol_use,
-          dust_allergy: internal.dust_allergy,
-          genetic_risk: internal.genetic_risk,
-          chronic_lung_disease: internal.chronic_lung_disease,
-          balanced_diet: internal.balanced_diet,
-          obesity: internal.obesity,
-          active_smoking: internal.active_smoking,
-          passive_smoking: internal.passive_smoking,
-        };
-      })
-    );
-    setExternalTable(
-      memoizedData.map((patient) => {
-        const external = patient.External;
-        return {
-          id: patient.patient_id,
-          air_pollution: external.air_pollution,
-          occupational_hazards: external.occupational_hazards,
-        };
-      })
-    );
-    setSymptomTable(
-      memoizedData.map((patient) => {
-        const symptoms = patient.symptoms;
-        return {
-          id: patient.patient_id,
-          chest_pain: symptoms.chest_pain,
-          coughing_of_blood: symptoms.coughing_of_blood,
-          fatigue: symptoms.fatigue,
-          weight_loss: symptoms.weight_loss,
-          shortness_of_breath: symptoms.shortness_of_breath,
-          wheezing: symptoms.wheezing,
-          swallowing_difficulty: symptoms.swallowing_difficulty,
-          clubbing_of_fingernails: symptoms.clubbing_of_fingernails,
-          frequent_cold: symptoms.frequent_cold,
-          dry_cough: symptoms.dry_cough,
-          snoring: symptoms.snoring,
-        };
-      })
-    );
-    setRiskTable(
-      memoizedData.map((patient) => {
-        return {
-          id: patient.patient_id,
+          alcohol_use: patient.Internal.alcohol_use,
+          dust_allergy: patient.Internal.dust_allergy,
+          genetic_risk: patient.Internal.genetic_risk,
+          chronic_lung_disease: patient.Internal.chronic_lung_disease,
+          balanced_diet: patient.Internal.balanced_diet,
+          obesity: patient.Internal.obesity,
+          active_smoking: patient.Internal.active_smoking,
+          passive_smoking: patient.Internal.passive_smoking,
+          air_pollution: patient.External.air_pollution,
+          occupational_hazards: patient.External.occupational_hazards,
+          chest_pain: patient.symptoms.chest_pain,
+          coughing_of_blood: patient.symptoms.coughing_of_blood,
+          fatigue: patient.symptoms.fatigue,
+          weight_loss: patient.symptoms.weight_loss,
+          shortness_of_breath: patient.symptoms.shortness_of_breath,
+          wheezing: patient.symptoms.wheezing,
+          swallowing_difficulty: patient.symptoms.swallowing_difficulty,
+          clubbing_of_fingernails: patient.symptoms.clubbing_of_fingernails,
+          frequent_cold: patient.symptoms.frequent_cold,
+          dry_cough: patient.symptoms.dry_cough,
+          snoring: patient.symptoms.snoring,
           risk: patient.risk.risk,
         };
       })
-    );
-
-    //combine all table values into one array based on index
-    setAllTable(
-      patientTable.map((patient, index) => {
-        return {
-          ...patient,
-          ...internalTable[index],
-          ...externalTable[index],
-          ...symptomTable[index],
-          ...riskTable[index],
-        };
-      })
-    );
-    setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, [data]);
 
   const gender = {
@@ -171,10 +130,10 @@ const AdminDashboard = () => {
       {
         label: "Gender",
         data: [
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.gender === 2;
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.gender === 1;
           }).length,
         ],
@@ -200,34 +159,34 @@ const AdminDashboard = () => {
       {
         label: "Country",
         data: [
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Singapore";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Japan";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "South Korea";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "India";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Malaysia";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "China";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Indonesia";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Philippines";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Vietnam";
           }).length,
-          memoizedData.filter((row) => {
+          data.filter((row) => {
             return row.country.country_name === "Thailand";
           }).length,
         ],
@@ -356,8 +315,7 @@ const AdminDashboard = () => {
         ),
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [handleDelete]
   );
 
   const DataTable = ({ columns, data }) => {
@@ -514,11 +472,11 @@ const AdminDashboard = () => {
     });
     // alert response
     const data = await res.json();
-    if (memoizedData.error) {
-      alert(memoizedData.error);
+    if (data.error) {
+      alert(data.error);
     }
-    if (memoizedData.success) {
-      alert(memoizedData.success);
+    if (data.success) {
+      alert(data.success);
     }
   };
 
@@ -566,7 +524,7 @@ const AdminDashboard = () => {
                             p={7}
                             color="white"
                           >
-                            <RiSurveyLine size="24px" /> {memoizedData.length}{" "}
+                            <RiSurveyLine size="24px" /> {data.length}{" "}
                             Responses
                           </Box>
                         </GridItem>
@@ -580,10 +538,10 @@ const AdminDashboard = () => {
                           >
                             <SlEmotsmile size="24px" />{" "}
                             {(
-                              (memoizedData.filter(
+                              (data.filter(
                                 (row) => row.risk.risk === "Low"
                               ).length /
-                                memoizedData.length) *
+                                data.length) *
                               100
                             ).toFixed(2)}
                             % Low risk
@@ -599,10 +557,10 @@ const AdminDashboard = () => {
                           >
                             <FiAlertTriangle size="24px" />{" "}
                             {(
-                              (memoizedData.filter(
+                              (data.filter(
                                 (row) => row.risk.risk === "High"
                               ).length /
-                                memoizedData.length) *
+                                data.length) *
                               100
                             ).toFixed(2)}
                             % High risk
@@ -730,7 +688,7 @@ const AdminDashboard = () => {
                   </CardBody>
                   <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
-                <DataTable columns={columns} data={allTable} keyField="id" />
+                <DataTable columns={columns} data={tableData} keyField="id" />
               </TabPanel>
               {/* SQL Editor Tab */}
               <TabPanel id="sql-editor">
