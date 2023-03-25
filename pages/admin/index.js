@@ -37,6 +37,7 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useTable, usePagination, useSortBy } from "react-table";
 import Head from "next/head";
 import axios from "axios";
+import { useRouter } from 'next/router';
 
 //Icon & images imports
 import { RiSurveyLine } from "react-icons/ri";
@@ -60,6 +61,7 @@ Chart.register(ArcElement, LineController, LineElement, PointElement);
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const fetchData = async () => {
     const result = await axios.get("/api/db/patient");
@@ -115,6 +117,12 @@ const AdminDashboard = () => {
     },
     [data]
   );
+
+  const handleLogout = async () => {
+    // Remove the token from localStorage
+    localStorage.removeItem('token');
+    router.push('/login');
+  };
 
   const tableData = useMemo(() => {
     if (data.length > 0) {
@@ -394,6 +402,7 @@ const AdminDashboard = () => {
             overflowY: "hidden",
             borderBottom: "1px solid black",
           }}
+          onScroll={(e) => handleScroll(e)}
         >
           <Table
             {...getTableProps()}
@@ -542,6 +551,16 @@ const AdminDashboard = () => {
               <Tab>Main</Tab>
               <Tab>SQL Editor</Tab>
               <Tab>Correlation Heatmap</Tab>
+              <Button 
+                size='sm'
+                borderColor='red.500'
+                colorScheme='red'
+                variant='outline'
+                className='logout-button'
+                onClick={handleLogout}
+                >
+              Logout
+              </Button>
             </TabList>
 
             {/* Dashboard Tab */}
