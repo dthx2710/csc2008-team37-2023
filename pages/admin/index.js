@@ -29,10 +29,11 @@ import {
   Flex,
   Text,
   Spinner,
+  Image,
 } from "@chakra-ui/react";
-
+import { useRouter } from "next/router";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import { useTable, usePagination } from "react-table";
+import { useTable, usePagination, useSortBy } from "react-table";
 import Head from "next/head";
 import axios from "axios";
 
@@ -65,29 +66,35 @@ const AdminDashboard = () => {
   const [symptomTable, setSymptomTable] = useState([]);
   const [riskTable, setRiskTable] = useState([]);
   const [genderData, setGenderData] = useState({});
-  
-  useEffect(() => {
-    fetchData();
-  }, []);
+
+  const router = useRouter();
 
   const fetchData = async () => {
     const result = await axios.get("/api/db/patient");
     setData(result.data);
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const memoizedData = useMemo(() => data, [data]);
+
   const handleDelete = async (id) => {
-    // await axios.delete(`/api/db/patient/${id}`);
-    // fetchData();
-    console.log(id);
+    const del = data[id].patient_id;
+    await axios.delete(`/api/db/patient/${id}`);
+    fetchData();
   };
 
   const handleEdit = async (id) => {
-    console.log(id);
+    const edit = data[id].patient_id;
+    // route to edit patient Form
+    router.push(`/admin/edit/${edit}`);
   };
 
   useEffect(() => {
     setPatientTable(
-      data.map((patient) => {
+      memoizedData.map((patient) => {
         return {
           id: patient.patient_id,
           age: patient.age,
@@ -97,7 +104,7 @@ const AdminDashboard = () => {
       })
     );
     setInternalTable(
-      data.map((patient) => {
+      memoizedData.map((patient) => {
         const internal = patient.Internal;
         return {
           id: patient.patient_id,
@@ -113,7 +120,7 @@ const AdminDashboard = () => {
       })
     );
     setExternalTable(
-      data.map((patient) => {
+      memoizedData.map((patient) => {
         const external = patient.External;
         return {
           id: patient.patient_id,
@@ -123,7 +130,7 @@ const AdminDashboard = () => {
       })
     );
     setSymptomTable(
-      data.map((patient) => {
+      memoizedData.map((patient) => {
         const symptoms = patient.symptoms;
         return {
           id: patient.patient_id,
@@ -142,7 +149,7 @@ const AdminDashboard = () => {
       })
     );
     setRiskTable(
-      data.map((patient) => {
+      memoizedData.map((patient) => {
         return {
           id: patient.patient_id,
           risk: patient.risk.risk,
@@ -172,10 +179,10 @@ const AdminDashboard = () => {
       {
         label: "Gender",
         data: [
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.gender === 2;
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.gender === 1;
           }).length,
         ],
@@ -201,34 +208,34 @@ const AdminDashboard = () => {
       {
         label: "Country",
         data: [
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Singapore";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Japan";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "South Korea";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "India";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Malaysia";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "China";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Indonesia";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Philippines";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Vietnam";
           }).length,
-          data.filter((row) => {
+          memoizedData.filter((row) => {
             return row.country.country_name === "Thailand";
           }).length,
         ],
@@ -263,195 +270,79 @@ const AdminDashboard = () => {
     ],
   };
 
-  const columns = {
-    all: [
-      { Header: "Patient ID", accessor: "id", sortable: true },
-      { Header: "Age", accessor: "age" },
-      { Header: "Gender", accessor: "gender" },
-      { Header: "Country", accessor: "country" },
-      { Header: "Alcohol Use", accessor: "alcohol_use" },
-      { Header: "Dust Allergy", accessor: "dust_allergy" },
-      { Header: "Genetic Risk", accessor: "genetic_risk" },
-      { Header: "Chronic Lung Disease", accessor: "chronic_lung_disease" },
-      { Header: "Balanced Diet", accessor: "balanced_diet" },
-      { Header: "Obesity", accessor: "obesity" },
-      { Header: "Active Smoking", accessor: "active_smoking" },
-      { Header: "Passive Smoking", accessor: "passive_smoking" },
-      { Header: "Air Pollution", accessor: "air_pollution" },
-      { Header: "Occupational Hazards", accessor: "occupational_hazards" },
-      { Header: "Chest Pain", accessor: "chest_pain" },
-      { Header: "Coughing of Blood", accessor: "coughing_of_blood" },
-      { Header: "Fatigue", accessor: "fatigue" },
-      { Header: "Weight Loss", accessor: "weight_loss" },
-      { Header: "Shortness of Breath", accessor: "shortness_of_breath" },
-      { Header: "Wheezing", accessor: "wheezing" },
-      { Header: "Swallowing Difficulty", accessor: "swallowing_difficulty" },
-      { Header: "Risk", accessor: "risk" },
+  const columns = useMemo(
+    () => [
+      {
+        Header: "Patient Info",
+        columns: [
+          { Header: "Patient ID", accessor: "id", sortable: true },
+          { Header: "Age", accessor: "age" },
+          { Header: "Gender", accessor: "gender" },
+          { Header: "Country", accessor: "country" },
+          { Header: "Risk", accessor: "risk" },
+        ],
+      },
+      {
+        Header: "Internal Factors",
+        columns: [
+          { Header: "Alcohol Use", accessor: "alcohol_use" },
+          { Header: "Dust Allergy", accessor: "dust_allergy" },
+          { Header: "Genetic Risk", accessor: "genetic_risk" },
+          { Header: "Chronic Lung Disease", accessor: "chronic_lung_disease" },
+          { Header: "Balanced Diet", accessor: "balanced_diet" },
+          { Header: "Obesity", accessor: "obesity" },
+          { Header: "Active Smoking", accessor: "active_smoking" },
+          { Header: "Passive Smoking", accessor: "passive_smoking" },
+        ],
+      },
+      {
+        Header: "External Factors",
+        columns: [
+          { Header: "Air Pollution", accessor: "air_pollution" },
+          { Header: "Occupational Hazards", accessor: "occupational_hazards" },
+        ],
+      },
+      {
+        Header: "Symptoms",
+        columns: [
+          { Header: "Chest Pain", accessor: "chest_pain" },
+          { Header: "Coughing of Blood", accessor: "coughing_of_blood" },
+          { Header: "Fatigue", accessor: "fatigue" },
+          { Header: "Weight Loss", accessor: "weight_loss" },
+          { Header: "Shortness of Breath", accessor: "shortness_of_breath" },
+          { Header: "Wheezing", accessor: "wheezing" },
+          {
+            Header: "Swallowing Difficulty",
+            accessor: "swallowing_difficulty",
+          },
+        ],
+      },
       {
         Header: "Action",
         accessor: "action",
         Cell: ({ row }) => (
           <Flex>
             <IconButton
-
               aria-label="Edit"
               icon={<EditIcon />}
-              onClick={()=>{handleEdit(row.id)}}
+              onClick={() => {
+                handleEdit(row.id);
+              }}
             />
             <IconButton
-
               aria-label="Delete"
               icon={<DeleteIcon />}
-              onClick={() => { handleDelete(row.id) }}
+              onClick={() => {
+                handleDelete(row.id);
+              }}
             />
           </Flex>
         ),
       },
     ],
-    patient: [
-      { Header: "Patient ID", accessor: "id", sortable: true },
-      { Header: "Age", accessor: "age" },
-      { Header: "Gender", accessor: "gender" },
-      { Header: "Country", accessor: "country" },
-      {
-        Header: "Action",
-        accessor: "action",
-        Cell: ({ row }) => (
-          <Flex>
-            <IconButton
-
-              aria-label="Edit"
-              icon={<EditIcon />}
-              onClick={()=>{handleEdit(row.id)}}
-            />
-            <IconButton
-
-              aria-label="Delete"
-              icon={<DeleteIcon />}
-              onClick={() => { handleDelete(row.id) }}
-            />
-          </Flex>
-        ),
-      },
-    ],
-    internal: [
-      { Header: "Patient ID", accessor: "id", sortable: true },
-      { Header: "Alcohol Use", accessor: "alcohol_use" },
-      { Header: "Dust Allergy", accessor: "dust_allergy" },
-      { Header: "Genetic Risk", accessor: "genetic_risk" },
-      { Header: "Chronic Lung Disease", accessor: "chronic_lung_disease" },
-      { Header: "Balanced Diet", accessor: "balanced_diet" },
-      { Header: "Obesity", accessor: "obesity" },
-      { Header: "Active Smoking", accessor: "active_smoking" },
-      { Header: "Passive Smoking", accessor: "passive_smoking" },
-      {
-        Header: "Action",
-        accessor: "action",
-        Cell: ({ row }) => (
-          <Flex>
-            <IconButton
-
-              aria-label="Edit"
-              icon={<EditIcon />}
-              onClick={()=>{handleEdit(row.id)}}
-            />
-            <IconButton
-
-              aria-label="Delete"
-              icon={<DeleteIcon />}
-              onClick={() => { handleDelete(row.id) }}
-            />
-          </Flex>
-        ),
-      },
-    ],
-    external: [
-      { Header: "Patient ID", accessor: "id", sortable: true },
-      { Header: "Air Pollution", accessor: "air_pollution" },
-      { Header: "Occupational Hazards", accessor: "occupational_hazards" },
-      {
-        Header: "Action",
-        accessor: "action",
-        Cell: ({ row }) => (
-          <Flex>
-            <IconButton
-
-              aria-label="Edit"
-              icon={<EditIcon />}
-              onClick={()=>{handleEdit(row.id)}}
-            />
-            <IconButton
-
-              aria-label="Delete"
-              icon={<DeleteIcon />}
-              onClick={() => { handleDelete(row.id) }}
-            />
-          </Flex>
-        ),
-      },
-    ],
-    symptom: [
-      { Header: "Patient ID", accessor: "id", sortable: true },
-      { Header: "Chest Pain", accessor: "chest_pain" },
-      { Header: "Coughing of Blood", accessor: "coughing_of_blood" },
-      { Header: "Fatigue", accessor: "fatigue" },
-      { Header: "Weight Loss", accessor: "weight_loss" },
-      { Header: "Shortness of Breath", accessor: "shortness_of_breath" },
-      { Header: "Wheezing", accessor: "wheezing" },
-      { Header: "Swallowing Difficulty", accessor: "swallowing_difficulty" },
-      {
-        Header: "Clubbing of Fingernails",
-        accessor: "clubbing_of_fingernails",
-      },
-      { Header: "Frequent Cold", accessor: "frequent_cold" },
-      { Header: "Dry Cough", accessor: "dry_cough" },
-      { Header: "Snoring", accessor: "snoring" },
-      {
-        Header: "Action",
-        accessor: "action",
-        Cell: ({ row }) => (
-          <Flex>
-            <IconButton
-
-              aria-label="Edit"
-              icon={<EditIcon />}
-              onClick={()=>{handleEdit(row.id)}}
-            />
-            <IconButton
-
-              aria-label="Delete"
-              icon={<DeleteIcon />}
-              onClick={() => { handleDelete(row.id) }}
-            />
-          </Flex>
-        ),
-      },
-    ],
-    risk: [
-      { Header: "Patient ID", accessor: "id", sortable: true },
-      { Header: "Risk", accessor: "risk" },
-      {
-        Header: "Action",
-        accessor: "action",
-        Cell: ({ row }) => (
-          <Flex>
-            <IconButton
-
-              aria-label="Edit"
-              icon={<EditIcon />}
-              onClick={()=>{handleEdit(row.id)}}
-            />
-            <IconButton
-
-              aria-label="Delete"
-              icon={<DeleteIcon />}
-              onClick={() => { handleDelete(row.id) }}
-            />
-          </Flex>
-        ),
-      },
-    ],
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const DataTable = ({ columns, data }) => {
     const {
@@ -475,7 +366,8 @@ const AdminDashboard = () => {
         data,
         initialState: { pageIndex: 0, pageSize: 10 },
       },
-      usePagination
+      useSortBy,
+      usePagination,
     );
 
     return (
@@ -485,8 +377,15 @@ const AdminDashboard = () => {
             {headerGroups.map((headerGroup) => (
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <Th {...column.getHeaderProps()}>
+                  <Th {...column.getHeaderProps(column.getSortByToggleProps())}>
                     {column.render("Header")}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </span>
                   </Th>
                 ))}
               </Tr>
@@ -581,11 +480,11 @@ const AdminDashboard = () => {
     });
     // alert response
     const data = await res.json();
-    if (data.error) {
-      alert(data.error);
+    if (memoizedData.error) {
+      alert(memoizedData.error);
     }
-    if (data.success) {
-      alert(data.success);
+    if (memoizedData.success) {
+      alert(memoizedData.success);
     }
   };
 
@@ -607,11 +506,6 @@ const AdminDashboard = () => {
             <TabList>
               <Tab>Dashboard</Tab>
               <Tab>Main</Tab>
-              <Tab>Patient</Tab>
-              <Tab>Internal</Tab>
-              <Tab>External</Tab>
-              <Tab>Symptoms</Tab>
-              <Tab>Risk</Tab>
               <Tab>SQL Editor</Tab>
               <Tab>Correlation Heatmap</Tab>
             </TabList>
@@ -638,7 +532,8 @@ const AdminDashboard = () => {
                             p={7}
                             color="white"
                           >
-                            <RiSurveyLine size="24px" /> {data.length} Responses
+                            <RiSurveyLine size="24px" /> {memoizedData.length}{" "}
+                            Responses
                           </Box>
                         </GridItem>
                         <GridItem colSpan={2}>
@@ -651,9 +546,10 @@ const AdminDashboard = () => {
                           >
                             <SlEmotsmile size="24px" />{" "}
                             {(
-                              (data.filter((row) => row.risk.risk === "Low")
-                                .length /
-                                data.length) *
+                              (memoizedData.filter(
+                                (row) => row.risk.risk === "Low"
+                              ).length /
+                                memoizedData.length) *
                               100
                             ).toFixed(2)}
                             % Low risk
@@ -669,9 +565,10 @@ const AdminDashboard = () => {
                           >
                             <FiAlertTriangle size="24px" />{" "}
                             {(
-                              (data.filter((row) => row.risk.risk === "High")
-                                .length /
-                                data.length) *
+                              (memoizedData.filter(
+                                (row) => row.risk.risk === "High"
+                              ).length /
+                                memoizedData.length) *
                               100
                             ).toFixed(2)}
                             % High risk
@@ -819,49 +716,9 @@ const AdminDashboard = () => {
                   <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
                 <div style={{ overflowX: "scroll" }}>
-                  <DataTable
-                    columns={columns.all}
-                    data={allTable}
-                    keyField="id"
-                  />
+                  <DataTable columns={columns} data={allTable} keyField="id" />
                 </div>
               </TabPanel>
-              <TabPanel>
-                <DataTable
-                  columns={columns.patient}
-                  data={patientTable}
-                  keyField="id"
-                />
-              </TabPanel>
-              <TabPanel>
-                <DataTable
-                  columns={columns.internal}
-                  data={internalTable}
-                  keyField="id"
-                />
-              </TabPanel>
-              <TabPanel>
-                <DataTable
-                  columns={columns.external}
-                  data={externalTable}
-                  keyField="id"
-                />
-              </TabPanel>
-              <TabPanel>
-                <DataTable
-                  columns={columns.symptom}
-                  data={symptomTable}
-                  keyField="id"
-                />
-              </TabPanel>
-              <TabPanel>
-                <DataTable
-                  columns={columns.risk}
-                  data={riskTable}
-                  keyField="id"
-                />
-              </TabPanel>
-
               {/* SQL Editor Tab */}
               <TabPanel id="sql-editor">
                 <Box>
@@ -883,12 +740,12 @@ const AdminDashboard = () => {
                 </Card>
               </TabPanel>
               <TabPanel>
-                <img
+                <Image
                   src="Heatmap.png"
                   alt="Correlation Heatmap"
                   width="700"
                   height="600"
-                ></img>
+                ></Image>
               </TabPanel>
             </TabPanels>
           </Tabs>
