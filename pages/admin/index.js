@@ -30,6 +30,8 @@ import {
   Text,
   Spinner,
   Image,
+  Center,
+  Divider,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useTable, usePagination, useSortBy } from "react-table";
@@ -460,13 +462,16 @@ const AdminDashboard = () => {
           >
             {">>"}
           </Button>
-          <Text>
-            Page{" "}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{" "}
-          </Text>
-          <Text> | Go to page: </Text>
+          <Center height='50px'>
+            <Text margin='0 10px'>
+              Page{" "}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{" "}
+            </Text>
+            <Divider orientation='vertical' />
+            <Text margin='0 10px'> Go to page: </Text>
+          </Center>
           <Input
             ml={2}
             w={20}
