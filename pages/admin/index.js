@@ -31,7 +31,7 @@ import {
   Spinner,
   Image,
 } from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useTable, usePagination, useSortBy } from "react-table";
 import Head from "next/head";
 import axios from "axios";
@@ -68,27 +68,53 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  const handleDelete = useCallback(async (id) => {
-    const del = data[id].patient_id;
-    console.log(del)
-    if (del) {
-      // prompt user to confirm delete
-      const confirm = window.confirm(
-        "Are you sure you want to delete this patient?"
-      );
-      if (!confirm) return;
-      await axios.delete(`/api/db/patient/${del}`);
-      fetchData();
-      // notify user of success
-      alert("Patient deleted successfully");
-    }
-    else{
-      alert("Patient not found");
-    }
-  }, [data]);
+  const handleDelete = useCallback(
+    async (id) => {
+      const del = data[id].patient_id;
+      console.log(del);
+      if (del) {
+        // prompt user to confirm delete
+        const confirm = window.confirm(
+          "Are you sure you want to delete this patient?"
+        );
+        if (!confirm) return;
+        await axios.delete(`/api/db/patient/${del}`);
+        fetchData();
+        // notify user of success
+        alert("Patient deleted successfully");
+      } else {
+        alert("Patient not found");
+      }
+    },
+    [data]
+  );
 
-  const tableData = useMemo(() => 
-  {
+  const handleEdit = useCallback(
+    async (id) => {
+      const edit = data[id].patient_id;
+      console.log(edit);
+      if (edit) {
+        // prompt user to confirm edit
+        const prompt = parseInt(window.prompt("Enter new country id (1-9):"));
+        if (prompt < 1 || prompt > 9) {
+          await axios.put(`/api/db/patient/${edit}`, {
+            country_id: prompt,
+          });
+          fetchData();
+          // notify user of success
+          alert("Patient country updated successfully");
+        }
+        else {
+          alert("Invalid country id");
+        }
+      } else {
+        alert("Patient not found");
+      }
+    },
+    [data]
+  );
+
+  const tableData = useMemo(() => {
     if (data.length > 0) {
       setLoading(false);
       return data.map((patient) => {
@@ -120,7 +146,7 @@ const AdminDashboard = () => {
           snoring: patient.symptoms.snoring,
           risk: patient.risk.risk,
         };
-      })
+      });
     }
   }, [data]);
 
@@ -301,21 +327,32 @@ const AdminDashboard = () => {
         ],
       },
       {
-        Header: "Delete Row",
-        accessor: "delete",
+        Header: "Actions",
+        accessor: "actions",
         Cell: ({ row }) => (
-          <IconButton
-            aria-label="Delete"
-            icon={<DeleteIcon />}
-            onClick={() => {
-              handleDelete(row.id);
-            }}
-            colorScheme="linkedin"
-          />
+          <Flex>
+            <IconButton
+              aria-label="Edit"
+              icon={<EditIcon />}
+              onClick={() => {
+                handleEdit(row.id);
+              }}
+              colorScheme="yellow"
+              mr={2}
+            />
+            <IconButton
+              aria-label="Delete"
+              icon={<DeleteIcon />}
+              onClick={() => {
+                handleDelete(row.id);
+              }}
+              colorScheme="red"
+            />
+          </Flex>
         ),
       },
     ],
-    [handleDelete]
+    [handleDelete, handleEdit]
   );
 
   const DataTable = ({ columns, data }) => {
@@ -524,8 +561,7 @@ const AdminDashboard = () => {
                             p={7}
                             color="white"
                           >
-                            <RiSurveyLine size="24px" /> {data.length}{" "}
-                            Responses
+                            <RiSurveyLine size="24px" /> {data.length} Responses
                           </Box>
                         </GridItem>
                         <GridItem colSpan={2}>
@@ -538,9 +574,8 @@ const AdminDashboard = () => {
                           >
                             <SlEmotsmile size="24px" />{" "}
                             {(
-                              (data.filter(
-                                (row) => row.risk.risk === "Low"
-                              ).length /
+                              (data.filter((row) => row.risk.risk === "Low")
+                                .length /
                                 data.length) *
                               100
                             ).toFixed(2)}
@@ -557,9 +592,8 @@ const AdminDashboard = () => {
                           >
                             <FiAlertTriangle size="24px" />{" "}
                             {(
-                              (data.filter(
-                                (row) => row.risk.risk === "High"
-                              ).length /
+                              (data.filter((row) => row.risk.risk === "High")
+                                .length /
                                 data.length) *
                               100
                             ).toFixed(2)}

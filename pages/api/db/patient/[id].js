@@ -40,13 +40,13 @@ async function readPatient(res, id) {
 
 async function updatePatient(res, id, body) {
     try {
+        // update country
         const patient = await prisma.patient.update({
             where: {
                 patient_id: id,
             },
             data: {
-                age: body.age,
-                gender: body.gender
+                country_id: body.country_id,
             }
         })
         return res.status(200).json(patient, { success: true });
