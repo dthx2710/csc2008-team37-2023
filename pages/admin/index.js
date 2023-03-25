@@ -31,8 +31,7 @@ import {
   Spinner,
   Image,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 import { useTable, usePagination, useSortBy } from "react-table";
 import Head from "next/head";
 import axios from "axios";
@@ -43,6 +42,7 @@ import { BiWorld } from "react-icons/bi";
 import { ImManWoman } from "react-icons/im";
 import { FiAlertTriangle } from "react-icons/fi";
 import { SlEmotsmile } from "react-icons/sl";
+import styled from "styled-components";
 
 //chart.js
 import { Doughnut, Line, Pie } from "react-chartjs-2";
@@ -67,8 +67,6 @@ const AdminDashboard = () => {
   const [riskTable, setRiskTable] = useState([]);
   const [genderData, setGenderData] = useState({});
 
-  const router = useRouter();
-
   const fetchData = async () => {
     const result = await axios.get("/api/db/patient");
     setData(result.data);
@@ -84,12 +82,6 @@ const AdminDashboard = () => {
     const del = data[id].patient_id;
     await axios.delete(`/api/db/patient/${id}`);
     fetchData();
-  };
-
-  const handleEdit = async (id) => {
-    const edit = data[id].patient_id;
-    // route to edit patient Form
-    router.push(`/admin/edit/${edit}`);
   };
 
   useEffect(() => {
@@ -288,55 +280,79 @@ const AdminDashboard = () => {
           { Header: "Alcohol Use", accessor: "alcohol_use" },
           { Header: "Dust Allergy", accessor: "dust_allergy" },
           { Header: "Genetic Risk", accessor: "genetic_risk" },
-          { Header: "Chronic Lung Disease", accessor: "chronic_lung_disease" },
-          { Header: "Balanced Diet", accessor: "balanced_diet" },
+          {
+            Header: "Chronic Lung Disease",
+            accessor: "chronic_lung_disease",
+            collapse: true,
+          },
+          {
+            Header: "Balanced Diet",
+            accessor: "balanced_diet",
+            collapse: true,
+          },
           { Header: "Obesity", accessor: "obesity" },
-          { Header: "Active Smoking", accessor: "active_smoking" },
-          { Header: "Passive Smoking", accessor: "passive_smoking" },
+          {
+            Header: "Active Smoking",
+            accessor: "active_smoking",
+            collapse: true,
+          },
+          {
+            Header: "Passive Smoking",
+            accessor: "passive_smoking",
+          },
         ],
       },
       {
         Header: "External Factors",
         columns: [
-          { Header: "Air Pollution", accessor: "air_pollution" },
-          { Header: "Occupational Hazards", accessor: "occupational_hazards" },
+          {
+            Header: "Air Pollution",
+            accessor: "air_pollution",
+            collapse: true,
+          },
+          {
+            Header: "Occupational Hazards",
+            accessor: "occupational_hazards",
+            collapse: true,
+          },
         ],
       },
       {
         Header: "Symptoms",
         columns: [
           { Header: "Chest Pain", accessor: "chest_pain" },
-          { Header: "Coughing of Blood", accessor: "coughing_of_blood" },
+          {
+            Header: "Coughing of Blood",
+            accessor: "coughing_of_blood",
+            collapse: true,
+          },
           { Header: "Fatigue", accessor: "fatigue" },
           { Header: "Weight Loss", accessor: "weight_loss" },
-          { Header: "Shortness of Breath", accessor: "shortness_of_breath" },
+          {
+            Header: "Shortness of Breath",
+            accessor: "shortness_of_breath",
+            collapse: true,
+          },
           { Header: "Wheezing", accessor: "wheezing" },
           {
             Header: "Swallowing Difficulty",
             accessor: "swallowing_difficulty",
+            collapse: true,
           },
         ],
       },
       {
-        Header: "Action",
-        accessor: "action",
+        Header: "Delete Row",
+        accessor: "delete",
         Cell: ({ row }) => (
-          <Flex>
-            <IconButton
-              aria-label="Edit"
-              icon={<EditIcon />}
-              onClick={() => {
-                handleEdit(row.id);
-              }}
-            />
-            <IconButton
-              aria-label="Delete"
-              icon={<DeleteIcon />}
-              onClick={() => {
-                handleDelete(row.id);
-              }}
-            />
-          </Flex>
+          <IconButton
+            aria-label="Delete"
+            icon={<DeleteIcon />}
+            onClick={() => {
+              handleDelete(row.id);
+            }}
+            colorScheme="linkedin"
+          />
         ),
       },
     ],
@@ -367,46 +383,64 @@ const AdminDashboard = () => {
         initialState: { pageIndex: 0, pageSize: 10 },
       },
       useSortBy,
-      usePagination,
+      usePagination
     );
 
     return (
       <>
-        <Table {...getTableProps()} variant="striped" colorScheme="gray">
-          <Thead>
-            {headerGroups.map((headerGroup) => (
-              <Tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <Th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                    {column.render("Header")}
-                    <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
-                    </span>
-                  </Th>
-                ))}
-              </Tr>
-            ))}
-          </Thead>
-          <Tbody {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
-              return (
-                <Tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
-                    );
-                  })}
+        <div
+          className="tableWrap"
+          style={{
+            display: "block",
+            maxWidth: "100%",
+            overflowX: "scroll",
+            overflowY: "hidden",
+            borderBottom: "1px solid black",
+          }}
+        >
+          <Table
+            {...getTableProps()}
+            variant="striped"
+            colorScheme="linkedin"
+            style={{ width: "100%", borderSpacing: "0" }}
+          >
+            <Thead>
+              {headerGroups.map((headerGroup) => (
+                <Tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <Th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                    >
+                      {column.render("Header")}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? " 🔽"
+                            : " 🔼"
+                          : ""}
+                      </span>
+                    </Th>
+                  ))}
                 </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-        <Flex justify="center" mt={4}>
+              ))}
+            </Thead>
+            <Tbody {...getTableBodyProps()}>
+              {page.map((row) => {
+                prepareRow(row);
+                return (
+                  <Tr {...row.getRowProps()}>
+                    {row.cells.map((cell) => {
+                      return (
+                        <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                      );
+                    })}
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </div>
+        <Flex justify="center" mt={4} align="center">
           <Button
             onClick={() => gotoPage(0)}
             disabled={!canPreviousPage}
@@ -450,7 +484,7 @@ const AdminDashboard = () => {
           />
           <Select
             ml={2}
-            w={20}
+            w={"max"}
             value={pageSize}
             onChange={(e) => {
               setPageSize(Number(e.target.value));
@@ -641,6 +675,15 @@ const AdminDashboard = () => {
                         templateColumns="repeat(6, 1fr)"
                         gap={4}
                       >
+                        <GridItem colSpan={6}>
+                          <FormLabel>Table View</FormLabel>
+                          <Select placeholder="Patient Info">
+                            <option>Internal Factors</option>
+                            <option>External Factors</option>
+                            <option>Symptoms</option>
+                            <option>All Tables</option>
+                          </Select>
+                        </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Age</FormLabel>
                           <Select placeholder="Select age range">
@@ -663,43 +706,15 @@ const AdminDashboard = () => {
                           <FormLabel>Country</FormLabel>
                           <Select placeholder="Select country">
                             <option>Singapore</option>
+                            <option>Japan</option>
+                            <option>South Korea</option>
+                            <option>India</option>
+                            <option>China</option>
+                            <option>Indonesia</option>
+                            <option>Philippines</option>
+                            <option>Vietnam</option>
                             <option>Malaysia</option>
-                          </Select>
-                        </GridItem>
-                        <GridItem colSpan={2}>
-                          <FormLabel>External</FormLabel>
-                          <Select placeholder="Select options">
-                            <option>Air Pollution</option>
-                            <option>Occupational Hazards</option>
-                          </Select>
-                        </GridItem>
-                        <GridItem colSpan={2}>
-                          <FormLabel>Internal</FormLabel>
-                          <Select placeholder="Select options">
-                            <option>Alcohol Use</option>
-                            <option>Dust Allergy</option>
-                            <option>Genetic Risk</option>
-                            <option>Chronic Lung Desease</option>
-                            <option>Balanced Diet</option>
-                            <option>Obesity</option>
-                            <option>Active Smoking</option>
-                            <option>Passive Smoking</option>
-                          </Select>
-                        </GridItem>
-                        <GridItem colSpan={2}>
-                          <FormLabel>Symptoms</FormLabel>
-                          <Select placeholder="Select symptoms">
-                            <option>Chest Pain</option>
-                            <option>Coughing of Blood</option>
-                            <option>Fatigue</option>
-                            <option>Weight Loss</option>
-                            <option>Shortness of Breath</option>
-                            <option>Wheezing</option>
-                            <option>Swallowing Difficulty</option>
-                            <option>Clubbing of Fingernails</option>
-                            <option>Frequent Cold</option>
-                            <option>Dry Cough</option>
-                            <option>Snoring</option>
+                            <option>Thailand</option>
                           </Select>
                         </GridItem>
                         <GridItem colSpan={2}>
@@ -715,9 +730,7 @@ const AdminDashboard = () => {
                   </CardBody>
                   <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
-                <div style={{ overflowX: "scroll" }}>
-                  <DataTable columns={columns} data={allTable} keyField="id" />
-                </div>
+                <DataTable columns={columns} data={allTable} keyField="id" />
               </TabPanel>
               {/* SQL Editor Tab */}
               <TabPanel id="sql-editor">
