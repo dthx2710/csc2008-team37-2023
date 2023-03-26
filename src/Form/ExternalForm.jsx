@@ -13,8 +13,8 @@ import {
   FormErrorMessage,
   Tooltip,
 } from "@chakra-ui/react";
+import Brand from "../components/Brand";
 
-// step 2
 
 const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
   const { airPollution, occupationalHazards } = info;
@@ -28,9 +28,7 @@ const ExternalForm = ({ info, setStep, setProgress, setInfo }) => {
   const handleTooltip = (prop, value) => {
     setShowTooltip({ ...showTooltip, [prop]: value });
   };
-  // const handleChange = (prop) => (event) => {
-  //   setValues({ ...values, [prop]: event.target.value });
-  // };
+
   const handleSliderChange = (prop) => (val) => {
     setValues({ ...values, [prop]: val });
   };

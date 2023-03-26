@@ -6,13 +6,13 @@ import InternalForm from "@/src/Form/InternalForm";
 import ExternalForm from "@/src/Form/ExternalForm";
 import SymptomForm from "@/src/Form/SymptomForm";
 import ResultForm from "@/src/Form/ResultForm";
+import Brand from "@/src/components/Brand";
 
 const Form = () => {
   const [info, setInfo] = useState({});
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(0);
   const [submit, setSubmit] = useState(false);
-  const [result, setResult] = useState(false);
 
   useEffect(() => {
     if (submit) {
@@ -23,12 +23,11 @@ const Form = () => {
   }, [submit]);
 
   useEffect(() => {
-    if (result) {
+    if (info.risk) {
       createPatient();
-      setResult(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result]);
+  }, [info?.risk]);
 
   const handleSubmit = async () => {
     const risk = await fetch("/api/ml/naive_bayes", {
@@ -39,7 +38,6 @@ const Form = () => {
       body: JSON.stringify(info),
     }).then((res) => res.json());
     setInfo({ ...info, risk: risk.result });
-    setResult(true);
   };
 
   const createPatient = async () => {
@@ -71,7 +69,7 @@ const Form = () => {
         active_smoking: info.activeSmoking,
         passive_smoking: info.passiveSmoking,
       }),
-    })
+    });
     // // POST /api/db/external
     fetch(`/api/db/external/${patient.patient_id}`, {
       method: "POST",
@@ -82,7 +80,7 @@ const Form = () => {
         air_pollution: info.airPollution,
         occupational_hazards: info.occupationalHazards,
       }),
-    })
+    });
     // // POST /api/db/symptoms
     fetch(`/api/db/symptom/${patient.patient_id}`, {
       method: "POST",
@@ -102,7 +100,7 @@ const Form = () => {
         dry_cough: info.dryCough,
         snoring: info.snoring,
       }),
-    })
+    });
     // POST /api/db/risk
     fetch(`/api/db/risk/${patient.patient_id}`, {
       method: "POST",
@@ -121,10 +119,10 @@ const Form = () => {
         <title>Risk Assessment</title>
       </Head>
       <main>
-        <Center maxW={"3x1"}>
-          <Container p={4} mt={30}>
-            <Heading mb={20}>
-              <center>Risk Assessment</center>
+        <Center>
+          <Container p={4} mt={30} maxW={`${step === 5 ? "1500px" : "lg"}`}>
+            <Heading mb={5}>
+              <Brand />
             </Heading>
             <Progress value={progress} />
             <form onSubmit={handleSubmit}>

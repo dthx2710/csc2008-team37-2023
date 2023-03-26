@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 
-// step 4
 
 const SymptomForm = ({ info, setStep, setProgress, setInfo, setSubmit }) => {
   const {
