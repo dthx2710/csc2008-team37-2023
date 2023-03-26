@@ -148,7 +148,7 @@ const AdminDashboard = () => {
             frequent_cold: patient.symptoms.frequent_cold,
             dry_cough: patient.symptoms.dry_cough,
             snoring: patient.symptoms.snoring,
-            risk: patient.risk.risk,
+            risk: patient?.risk?.risk,
           };
         })
         .filter((row) => {
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
             row.age <= patientFilter.age[1] &&
             row.country === (patientFilter.country || row.country) &&
             row.gender === (patientFilter.gender || row.gender) &&
-            row.risk === (patientFilter.risk || row.risk)
+            row?.risk === (patientFilter?.risk || row?.risk)
           );
         });
     }
@@ -185,7 +185,7 @@ const AdminDashboard = () => {
 
   const handleEdit = useCallback(
     async (id) => {
-      const edit = tableData[id].patient_id;
+      const edit = tableData[id].id;
       if (edit) {
         // prompt user to confirm edit
         const prompt = parseInt(window.prompt("Enter new country id (1-10):"));
@@ -733,7 +733,7 @@ const AdminDashboard = () => {
                           >
                             <SlEmotsmile size="24px" />{" "}
                             {(
-                              (data.filter((row) => row.risk.risk === "Low")
+                              (data.filter((row) => row?.risk?.risk === "Low")
                                 .length /
                                 data.length) *
                               100
@@ -751,7 +751,7 @@ const AdminDashboard = () => {
                           >
                             <FiAlertTriangle size="24px" />{" "}
                             {(
-                              (data.filter((row) => row.risk.risk === "High")
+                              (data.filter((row) => row?.risk?.risk === "High")
                                 .length /
                                 data.length) *
                               100
@@ -890,7 +890,7 @@ const AdminDashboard = () => {
                         <GridItem colSpan={2}>
                           <FormLabel>Risk</FormLabel>
                           <Select
-                            value={patientFilter.risk}
+                            value={patientFilter?.risk}
                             placeholder="Select risk level"
                             onChange={handlePatientFilter("risk")}
                           >
