@@ -13,7 +13,6 @@ const Form = () => {
   const [step, setStep] = useState(1);
   const [progress, setProgress] = useState(0);
   const [submit, setSubmit] = useState(false);
-  const [result, setResult] = useState(false);
 
   useEffect(() => {
     if (submit) {
@@ -24,12 +23,11 @@ const Form = () => {
   }, [submit]);
 
   useEffect(() => {
-    if (result) {
+    if (info.risk) {
       createPatient();
-      setResult(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result]);
+  }, [info?.risk]);
 
   const handleSubmit = async () => {
     const risk = await fetch("/api/ml/naive_bayes", {
@@ -39,9 +37,7 @@ const Form = () => {
       },
       body: JSON.stringify(info),
     }).then((res) => res.json());
-    console.log(risk);
     setInfo({ ...info, risk: risk.result });
-    setResult(true);
   };
 
   const createPatient = async () => {
