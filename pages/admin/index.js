@@ -95,6 +95,15 @@ const AdminDashboard = () => {
     } else setPatientFilter({ ...patientFilter, [props]: value });
   };
 
+  const resetFilter = () => {
+    setPatientFilter({
+      age: [0, 100],
+      gender: "",
+      country: "",
+      risk: "",
+    });
+  };
+
   const router = useRouter();
 
   const fetchData = async () => {
@@ -105,55 +114,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleDelete = useCallback(
-    async (id) => {
-      const del = data[id].patient_id;
-      if (del) {
-        // prompt user to confirm delete
-        const confirm = window.confirm(
-          "Are you sure you want to delete this patient?"
-        );
-        if (!confirm) return;
-        await axios.delete(`/api/db/patient/${del}`);
-        fetchData();
-        // notify user of success
-        alert("Patient deleted successfully");
-      } else {
-        alert("Patient not found");
-      }
-    },
-    [data]
-  );
-
-  const handleEdit = useCallback(
-    async (id) => {
-      const edit = data[id].patient_id;
-      if (edit) {
-        // prompt user to confirm edit
-        const prompt = parseInt(window.prompt("Enter new country id (1-10):"));
-        if (prompt < 1 || prompt > 9) {
-          await axios.put(`/api/db/patient/${edit}`, {
-            country_id: prompt,
-          });
-          fetchData();
-          // notify user of success
-          alert("Patient country updated successfully");
-        } else {
-          alert("Invalid country id");
-        }
-      } else {
-        alert("Patient not found");
-      }
-    },
-    [data]
-  );
-
-  const handleLogout = async () => {
-    // Remove the token from localStorage
-    localStorage.removeItem("token");
-    router.push("/login");
-  };
 
   const tableData = useMemo(() => {
     if (data.length > 0) {
@@ -200,6 +160,55 @@ const AdminDashboard = () => {
         });
     }
   }, [data, patientFilter]);
+
+  const handleDelete = useCallback(
+    async (id) => {
+      const del = tableData[id].id;
+      if (del) {
+        // prompt user to confirm delete
+        const confirm = window.confirm(
+          "Are you sure you want to delete this patient?"
+        );
+        if (!confirm) return;
+        await axios.delete(`/api/db/patient/${del}`);
+        fetchData();
+        // notify user of success
+        alert("Patient deleted successfully");
+      } else {
+        alert("Patient not found");
+      }
+    },
+    [tableData]
+  );
+
+  const handleEdit = useCallback(
+    async (id) => {
+      const edit = tableData[id].patient_id;
+      if (edit) {
+        // prompt user to confirm edit
+        const prompt = parseInt(window.prompt("Enter new country id (1-10):"));
+        if (prompt < 1 || prompt > 9) {
+          await axios.put(`/api/db/patient/${edit}`, {
+            country_id: prompt,
+          });
+          fetchData();
+          // notify user of success
+          alert("Patient country updated successfully");
+        } else {
+          alert("Invalid country id");
+        }
+      } else {
+        alert("Patient not found");
+      }
+    },
+    [tableData]
+  );
+
+  const handleLogout = async () => {
+    // Remove the token from localStorage
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
 
   const gender = {
     labels: ["Female", "Male"],
@@ -878,6 +887,26 @@ const AdminDashboard = () => {
                             <option>Low</option>
                           </Select>
                         </GridItem>
+                        <GridItem colSpan={2}>
+                          <FormLabel>Actions</FormLabel>
+                          <Flex>
+                            <Button
+                              colorScheme="teal"
+                              variant="outline"
+                              onClick={resetFilter}
+                              mr={2}
+                            >
+                              Reset Filters
+                            </Button>
+                            <Button
+                              colorScheme="pink"
+                              variant="outline"
+                              onClick={fetchData}
+                            >
+                              Refresh Table
+                            </Button>
+                          </Flex>
+                        </GridItem>
                       </Grid>
                     </FormControl>
                   </CardBody>
@@ -886,7 +915,11 @@ const AdminDashboard = () => {
                 <br></br>
                 <Card>
                   <CardBody>
-                    <DataTable columns={columns} data={tableData} keyField="id" />
+                    <DataTable
+                      columns={columns}
+                      data={tableData}
+                      keyField="id"
+                    />
                   </CardBody>
                   <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
