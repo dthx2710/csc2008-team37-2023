@@ -883,7 +883,13 @@ const AdminDashboard = () => {
                   </CardBody>
                   <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
-                <DataTable columns={columns} data={tableData} keyField="id" />
+                <br></br>
+                <Card>
+                  <CardBody>
+                    <DataTable columns={columns} data={tableData} keyField="id" />
+                  </CardBody>
+                  <CardFooter>{/* Insert Footer if any */}</CardFooter>
+                </Card>
               </TabPanel>
               {/* SQL Editor Tab */}
               <TabPanel id="sql-editor">
