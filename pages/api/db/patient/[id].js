@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient({ log: ["query"] });
 
 export default async function handler(req, res) {
-    const { id } = req.query;
+    const id = parseInt(req.query.id);
     const body = req.body;
     switch (req.method) {
         case 'GET':
@@ -40,13 +40,13 @@ async function readPatient(res, id) {
 
 async function updatePatient(res, id, body) {
     try {
+        // update country
         const patient = await prisma.patient.update({
             where: {
                 patient_id: id,
             },
             data: {
-                age: body.age,
-                gender: body.gender
+                country_id: body.country_id,
             }
         })
         return res.status(200).json(patient, { success: true });
@@ -59,6 +59,7 @@ async function updatePatient(res, id, body) {
 
 async function deletePatient(res, id) {
     try {
+        console.log('deleting patient', id)
         const patient = await prisma.patient.delete({
             where: {    
                 patient_id: id,
