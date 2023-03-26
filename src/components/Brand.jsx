@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const Brand = () => {
   return (
@@ -9,7 +10,7 @@ const Brand = () => {
         </h1>
         <div className="flex w-[150px] sm:w-[200px] justify-center overflow-hidden relative">
           <span className="text-4xl font-bold text-white">
-            <img
+            <Image
               src="/header-lung.png"
               alt=""
               className="-mr-10 w-full absolute right-0 object-cover h-full"
