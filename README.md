@@ -19,28 +19,61 @@ Name | Student ID | Github Username
     > `git clone`
 - Install Dependencies & Packages
     > `npm install`
- - Initialize python venv for prediction model api. Use `pyinitlinux` instead if on Linux OS
-    > `npm run pyinit` or `npm run pyinitlinux`
+ - Initialize python venv for prediction model api. Use `initlinux` instead if on Linux OS
+    > `npm run init` or `npm run initlinux`
 - Create a `.env` file in the working directory
     - You can use the .env.sample file as a template
-    - Update OS key to `LINUX` if on Linux OS for ml scripts to run properly
+    - Update OS_ENV environment key to `LINUX` if on Linux OS for ml scripts to run properly
 - Build the program
     > `npm run build`
 - Run the program
     > `npm start` 
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Usage
+- Risk Assessment Survey
+    - Fill in your details and factors, range of minimum number is good/healthy, maximum number is bad/unhealthy
+    - Submit and view your results from our prediction model
+    - Your results be added to the database anonymously
+- Admin Dashboard
+    - Admin account details are in Users table of the database, but here are some test accounts to login:
+        Username | Password
+        --- | ---
+        art | 8NAADrwQ1nS5
+        beverie | ozJxVgU6
+        cazzie | o4wrmXLeRVM
+        cynthea | QnskuXu
+        dolicon | doliconnn
+    - Admin dashboard provides basic data visualization and a table view with filters and edit/delete features
+    
+## Screenshots
+
+**Home Page**
+![home](https://user-images.githubusercontent.com/37941268/227802278-eed4c255-8761-48d8-acf4-c64ccc7d367c.png)
+
+
+**Survey Results**
+![results](https://user-images.githubusercontent.com/37941268/227802304-377e208f-54dc-4d83-9bef-88169f789ebf.png)
+
+
+**Admin Dashboard**
+![dashboard](https://user-images.githubusercontent.com/37941268/227802451-e2c82507-56a5-40f5-a814-48d235efa715.png)
+
+
+**Data Table and Filters**
+![table](https://user-images.githubusercontent.com/37941268/227802499-57674104-2c4b-4c58-9a43-7bb6a4ff4a4b.png)
+
 
 ## Others
 - Database visualization GUI Tool
-    > `npx prisma studio`
+    > Run `npx prisma studio`
 - Planetscale (Cloud SQL Database) performance analytics
     1. Go to [Planetscale](https://planetscale.com/)
-    2. Login using test account credentials
+    2. Login using test account credentials:
+        - Email: `csc2008team37@gmail.com`
+        - Password: `csc2008team372023`
     3. Go to [project dashboard](https://app.planetscale.com/dolicon/csc2008-team37-2023)
-    4. Navigate to [**Insights* tab](https://app.planetscale.com/dolicon/csc2008-team37-2023/main/insights)
+    4. Navigate to [**Insights** tab](https://app.planetscale.com/dolicon/csc2008-team37-2023/main/insights)
     5. View analytics (Query latencies, Qps, Rows r/w, etc)
 - Kaggle Dataset Used
     > https://www.kaggle.com/datasets/thedevastator/cancer-patients-and-air-pollution-a-new-link
