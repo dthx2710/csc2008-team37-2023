@@ -21,9 +21,9 @@ const Steps = () => {
               <div class="flex items-center py-2">
                 <span class="text-gray-500">
                   Smoking is the leading cause of lung cancer, so quitting is
-                  crucial. If you don't smoke, don't start. If you do smoke,
-                  seek help to quit, such as nicotine replacement therapy,
-                  medications, or counseling.
+                  crucial. If you don&apos;t smoke, don&apos;t start. If you do
+                  smoke, seek help to quit, such as nicotine replacement
+                  therapy, medications, or counseling.
                 </span>
               </div>
             </div>

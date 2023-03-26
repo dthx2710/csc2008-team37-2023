@@ -14,8 +14,6 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 
-// step 2
-
 const InternalForm = ({ info, setStep, setProgress, setInfo }) => {
   const {
     alcoholUse,

@@ -14,18 +14,23 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from "@chakra-ui/react";
+import Brand from "../components/Brand";
 
-//step 1
 
 const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
   const { age, gender, country } = info;
-  const patientInit = { age: age??'', gender: gender??0, country: country??0 };
+  const patientInit = {
+    age: age ?? "",
+    gender: gender ?? 0,
+    country: country ?? 0,
+  };
   const [values, setValues] = useState(patientInit);
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
   return (
     <>
+      {/* <Brand /> */}
       <Stack spacing={4}>
         <Text as="samp" fontSize="l" mt={2} mb={5}>
           <center>Personal Information</center>
@@ -50,11 +55,10 @@ const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
             id="age"
             type="number"
             value={values.age}
-            min = {1}
-            max = {100}
+            min={1}
+            max={100}
           >
-            <NumberInputField 
-            onChange={handleChange("age")}/>
+            <NumberInputField onChange={handleChange("age")} />
           </NumberInput>
           <FormHelperText>Please enter your age</FormHelperText>
           <FormErrorMessage>This field is required</FormErrorMessage>
@@ -75,7 +79,6 @@ const PatientForm = ({ info, setStep, setProgress, setInfo }) => {
             <option value="6">China</option>
             <option value="7">Indonesia</option>
             <option value="8">Philippines</option>
-
           </Select>
           <FormHelperText>Please select your country</FormHelperText>
           <FormErrorMessage>This field is required</FormErrorMessage>
