@@ -32,12 +32,13 @@ import {
   Image,
   Center,
   Divider,
+  Badge,
 } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useTable, usePagination, useSortBy } from "react-table";
 import Head from "next/head";
 import axios from "axios";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 //Icon & images imports
 import { RiSurveyLine } from "react-icons/ri";
@@ -61,6 +62,41 @@ Chart.register(ArcElement, LineController, LineElement, PointElement);
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [tableViewFilter, setTableViewFilter] = useState(["Patient Info"]);
+  const [patientFilter, setPatientFilter] = useState({
+    age: [0, 100],
+    gender: "",
+    country: "",
+    risk: "",
+  });
+
+  const handleTableViewFilter = (e) => {
+    const value = e.target.value;
+    if (value === "All Tables") {
+      setTableViewFilter([
+        "Patient Info",
+        "Internal Factors",
+        "External Factors",
+        "Symptoms",
+      ]);
+    } else {
+      setTableViewFilter([value]);
+    }
+  };
+
+  const handlePatientFilter = (props) => (e) => {
+    const value = e.target.value;
+    // destructure
+    if (props === "age") {
+      const age = value.split("-").map((x) => parseInt(x));
+      setPatientFilter({ ...patientFilter, [props]: age });
+    } else setPatientFilter({ ...patientFilter, [props]: value });
+  };
+
+  useEffect(() => {
+    console.log(patientFilter);
+  }, [patientFilter]);
+
   const router = useRouter();
 
   const fetchData = async () => {
@@ -99,7 +135,7 @@ const AdminDashboard = () => {
       console.log(edit);
       if (edit) {
         // prompt user to confirm edit
-        const prompt = parseInt(window.prompt("Enter new country id (1-9):"));
+        const prompt = parseInt(window.prompt("Enter new country id (1-10):"));
         if (prompt < 1 || prompt > 9) {
           await axios.put(`/api/db/patient/${edit}`, {
             country_id: prompt,
@@ -107,8 +143,7 @@ const AdminDashboard = () => {
           fetchData();
           // notify user of success
           alert("Patient country updated successfully");
-        }
-        else {
+        } else {
           alert("Invalid country id");
         }
       } else {
@@ -120,45 +155,56 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     // Remove the token from localStorage
-    localStorage.removeItem('token');
-    router.push('/login');
+    localStorage.removeItem("token");
+    router.push("/login");
   };
 
   const tableData = useMemo(() => {
     if (data.length > 0) {
       setLoading(false);
-      return data.map((patient) => {
-        return {
-          id: patient.patient_id,
-          age: patient.age,
-          gender: patient.gender === 1 ? "Male" : "Female",
-          country: patient.country.country_name,
-          alcohol_use: patient.Internal.alcohol_use,
-          dust_allergy: patient.Internal.dust_allergy,
-          genetic_risk: patient.Internal.genetic_risk,
-          chronic_lung_disease: patient.Internal.chronic_lung_disease,
-          balanced_diet: patient.Internal.balanced_diet,
-          obesity: patient.Internal.obesity,
-          active_smoking: patient.Internal.active_smoking,
-          passive_smoking: patient.Internal.passive_smoking,
-          air_pollution: patient.External.air_pollution,
-          occupational_hazards: patient.External.occupational_hazards,
-          chest_pain: patient.symptoms.chest_pain,
-          coughing_of_blood: patient.symptoms.coughing_of_blood,
-          fatigue: patient.symptoms.fatigue,
-          weight_loss: patient.symptoms.weight_loss,
-          shortness_of_breath: patient.symptoms.shortness_of_breath,
-          wheezing: patient.symptoms.wheezing,
-          swallowing_difficulty: patient.symptoms.swallowing_difficulty,
-          clubbing_of_fingernails: patient.symptoms.clubbing_of_fingernails,
-          frequent_cold: patient.symptoms.frequent_cold,
-          dry_cough: patient.symptoms.dry_cough,
-          snoring: patient.symptoms.snoring,
-          risk: patient.risk.risk,
-        };
-      });
+      return data
+        .map((patient) => {
+          return {
+            id: patient.patient_id,
+            age: patient.age,
+            gender: patient.gender === 1 ? "Male" : "Female",
+            country: patient.country.country_name,
+            alcohol_use: patient.Internal.alcohol_use,
+            dust_allergy: patient.Internal.dust_allergy,
+            genetic_risk: patient.Internal.genetic_risk,
+            chronic_lung_disease: patient.Internal.chronic_lung_disease,
+            balanced_diet: patient.Internal.balanced_diet,
+            obesity: patient.Internal.obesity,
+            active_smoking: patient.Internal.active_smoking,
+            passive_smoking: patient.Internal.passive_smoking,
+            air_pollution: patient.External.air_pollution,
+            occupational_hazards: patient.External.occupational_hazards,
+            chest_pain: patient.symptoms.chest_pain,
+            coughing_of_blood: patient.symptoms.coughing_of_blood,
+            fatigue: patient.symptoms.fatigue,
+            weight_loss: patient.symptoms.weight_loss,
+            shortness_of_breath: patient.symptoms.shortness_of_breath,
+            wheezing: patient.symptoms.wheezing,
+            swallowing_difficulty: patient.symptoms.swallowing_difficulty,
+            clubbing_of_fingernails: patient.symptoms.clubbing_of_fingernails,
+            frequent_cold: patient.symptoms.frequent_cold,
+            dry_cough: patient.symptoms.dry_cough,
+            snoring: patient.symptoms.snoring,
+            risk: patient.risk.risk,
+          };
+        })
+        .filter((row) => {
+          console.log("hi");
+          return (
+            row.age >= patientFilter.age[0] &&
+            row.age <= patientFilter.age[1] &&
+            row.country === (patientFilter.country || row.country) &&
+            row.gender === (patientFilter.gender || row.gender) &&
+            row.risk === (patientFilter.risk || row.risk)
+          );
+        });
     }
-  }, [data]);
+  }, [data, patientFilter]);
 
   const gender = {
     labels: ["Female", "Male"],
@@ -262,40 +308,80 @@ const AdminDashboard = () => {
       {
         Header: "Patient Info",
         columns: [
-          { Header: "Patient ID", accessor: "id", sortable: true },
-          { Header: "Age", accessor: "age" },
-          { Header: "Gender", accessor: "gender" },
-          { Header: "Country", accessor: "country" },
-          { Header: "Risk", accessor: "risk" },
+          {
+            Header: "Patient ID",
+            accessor: "id",
+            sortable: true,
+            show: true,
+          },
+          {
+            Header: "Age",
+            accessor: "age",
+            show: tableViewFilter.includes("Patient Info"),
+          },
+          {
+            Header: "Gender",
+            accessor: "gender",
+            show: tableViewFilter.includes("Patient Info"),
+          },
+          {
+            Header: "Country",
+            accessor: "country",
+            show: tableViewFilter.includes("Patient Info"),
+          },
+          {
+            Header: "Risk",
+            accessor: "risk",
+            show: tableViewFilter.includes("Patient Info"),
+          },
         ],
+        show: tableViewFilter.includes("Patient Info"),
       },
       {
         Header: "Internal Factors",
         columns: [
-          { Header: "Alcohol Use", accessor: "alcohol_use" },
-          { Header: "Dust Allergy", accessor: "dust_allergy" },
-          { Header: "Genetic Risk", accessor: "genetic_risk" },
+          {
+            Header: "Alcohol Use",
+            accessor: "alcohol_use",
+            show: tableViewFilter.includes("Internal Factors"),
+          },
+          {
+            Header: "Dust Allergy",
+            accessor: "dust_allergy",
+            show: tableViewFilter.includes("Internal Factors"),
+          },
+          {
+            Header: "Genetic Risk",
+            accessor: "genetic_risk",
+            show: tableViewFilter.includes("Internal Factors"),
+          },
           {
             Header: "Chronic Lung Disease",
             accessor: "chronic_lung_disease",
-            collapse: true,
+            show: tableViewFilter.includes("Internal Factors"),
           },
           {
             Header: "Balanced Diet",
             accessor: "balanced_diet",
-            collapse: true,
+            show: tableViewFilter.includes("Internal Factors"),
           },
-          { Header: "Obesity", accessor: "obesity" },
+          {
+            Header: "Obesity",
+            accessor: "obesity",
+            show: tableViewFilter.includes("Internal Factors"),
+          },
           {
             Header: "Active Smoking",
             accessor: "active_smoking",
-            collapse: true,
+            show: tableViewFilter.includes("Internal Factors"),
           },
           {
             Header: "Passive Smoking",
             accessor: "passive_smoking",
+            show: tableViewFilter.includes("Internal Factors"),
           },
         ],
+        show: tableViewFilter.includes("Internal Factors"),
       },
       {
         Header: "External Factors",
@@ -303,38 +389,52 @@ const AdminDashboard = () => {
           {
             Header: "Air Pollution",
             accessor: "air_pollution",
-            collapse: true,
+            show: tableViewFilter.includes("External Factors"),
           },
           {
             Header: "Occupational Hazards",
             accessor: "occupational_hazards",
-            collapse: true,
+            show: tableViewFilter.includes("External Factors"),
           },
         ],
+        show: tableViewFilter.includes("External Factors"),
       },
       {
         Header: "Symptoms",
         columns: [
-          { Header: "Chest Pain", accessor: "chest_pain" },
+          {
+            Header: "Chest Pain",
+            accessor: "chest_pain",
+            show: tableViewFilter.includes("Symptoms"),
+          },
           {
             Header: "Coughing of Blood",
             accessor: "coughing_of_blood",
-            collapse: true,
+            show: tableViewFilter.includes("Symptoms"),
           },
           { Header: "Fatigue", accessor: "fatigue" },
-          { Header: "Weight Loss", accessor: "weight_loss" },
+          {
+            Header: "Weight Loss",
+            accessor: "weight_loss",
+            show: tableViewFilter.includes("Symptoms"),
+          },
           {
             Header: "Shortness of Breath",
             accessor: "shortness_of_breath",
-            collapse: true,
+            show: tableViewFilter.includes("Symptoms"),
           },
-          { Header: "Wheezing", accessor: "wheezing" },
+          {
+            Header: "Wheezing",
+            accessor: "wheezing",
+            show: tableViewFilter.includes("Symptoms"),
+          },
           {
             Header: "Swallowing Difficulty",
             accessor: "swallowing_difficulty",
-            collapse: true,
+            show: tableViewFilter.includes("Symptoms"),
           },
         ],
+        show: tableViewFilter.includes("Symptoms"),
       },
       {
         Header: "Actions",
@@ -360,9 +460,10 @@ const AdminDashboard = () => {
             />
           </Flex>
         ),
+        show: true,
       },
     ],
-    [handleDelete, handleEdit]
+    [handleDelete, handleEdit, tableViewFilter]
   );
 
   const DataTable = ({ columns, data }) => {
@@ -411,24 +512,32 @@ const AdminDashboard = () => {
             style={{ width: "100%", borderSpacing: "0" }}
           >
             <Thead>
-              {headerGroups.map((headerGroup) => (
-                <Tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <Th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                    >
-                      {column.render("Header")}
-                      <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? " 🔽"
-                            : " 🔼"
-                          : ""}
-                      </span>
-                    </Th>
-                  ))}
-                </Tr>
-              ))}
+              {headerGroups.map(
+                (headerGroup) =>
+                  true && (
+                    <Tr {...headerGroup.getHeaderGroupProps()}>
+                      {headerGroup.headers.map(
+                        (column) =>
+                          column.show && (
+                            <Th
+                              {...column.getHeaderProps(
+                                column.getSortByToggleProps()
+                              )}
+                            >
+                              {column.render("Header")}
+                              <span>
+                                {column.isSorted
+                                  ? column.isSortedDesc
+                                    ? " 🔽"
+                                    : " 🔼"
+                                  : ""}
+                              </span>
+                            </Th>
+                          )
+                      )}
+                    </Tr>
+                  )
+              )}
             </Thead>
             <Tbody {...getTableBodyProps()}>
               {page.map((row) => {
@@ -437,7 +546,27 @@ const AdminDashboard = () => {
                   <Tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
                       return (
-                        <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                        cell.column.show && (
+                          <Td {...cell.getCellProps()}>
+                            {cell.column.Header === "Risk" ? (
+                              cell.value === "High" ? (
+                                <Badge colorScheme="red">
+                                  {cell.render("Cell")}
+                                </Badge>
+                              ) : cell.value === "Medium" ? (
+                                <Badge colorScheme="yellow">
+                                  {cell.render("Cell")}
+                                </Badge>
+                              ) : (
+                                <Badge colorScheme="green">
+                                  {cell.render("Cell")}
+                                </Badge>
+                              )
+                            ) : (
+                              cell.render("Cell")
+                            )}
+                          </Td>
+                        )
                       );
                     })}
                   </Tr>
@@ -471,15 +600,15 @@ const AdminDashboard = () => {
           >
             {">>"}
           </Button>
-          <Center height='50px'>
-            <Text margin='0 10px'>
+          <Center height="50px">
+            <Text margin="0 10px">
               Page{" "}
               <strong>
                 {pageIndex + 1} of {pageOptions.length}
               </strong>{" "}
             </Text>
-            <Divider orientation='vertical' />
-            <Text margin='0 10px'> Go to page: </Text>
+            <Divider orientation="vertical" />
+            <Text margin="0 10px"> Go to page: </Text>
           </Center>
           <Input
             ml={2}
@@ -551,15 +680,15 @@ const AdminDashboard = () => {
               <Tab>Main</Tab>
               <Tab>SQL Editor</Tab>
               <Tab>Correlation Heatmap</Tab>
-              <Button 
-                size='sm'
-                borderColor='red.500'
-                colorScheme='red'
-                variant='outline'
-                className='logout-button'
+              <Button
+                size="sm"
+                borderColor="red.500"
+                colorScheme="red"
+                variant="outline"
+                className="logout-button"
                 onClick={handleLogout}
-                >
-              Logout
+              >
+                Logout
               </Button>
             </TabList>
 
@@ -693,7 +822,8 @@ const AdminDashboard = () => {
                       >
                         <GridItem colSpan={6}>
                           <FormLabel>Table View</FormLabel>
-                          <Select placeholder="Patient Info">
+                          <Select onChange={handleTableViewFilter}>
+                            <option>Patient Info</option>
                             <option>Internal Factors</option>
                             <option>External Factors</option>
                             <option>Symptoms</option>
@@ -702,7 +832,10 @@ const AdminDashboard = () => {
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Age</FormLabel>
-                          <Select placeholder="Select age range">
+                          <Select
+                            placeholder="Select age range"
+                            onChange={handlePatientFilter("age")}
+                          >
                             <option>21-25</option>
                             <option>26-30</option>
                             <option>31-35</option>
@@ -713,14 +846,20 @@ const AdminDashboard = () => {
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Gender</FormLabel>
-                          <Select placeholder="Select gender">
+                          <Select
+                            placeholder="Select gender"
+                            onChange={handlePatientFilter("gender")}
+                          >
                             <option>Male</option>
                             <option>Female</option>
                           </Select>
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Country</FormLabel>
-                          <Select placeholder="Select country">
+                          <Select
+                            placeholder="Select country"
+                            onChange={handlePatientFilter("country")}
+                          >
                             <option>Singapore</option>
                             <option>Japan</option>
                             <option>South Korea</option>
@@ -735,7 +874,10 @@ const AdminDashboard = () => {
                         </GridItem>
                         <GridItem colSpan={2}>
                           <FormLabel>Risk</FormLabel>
-                          <Select placeholder="Select risk level">
+                          <Select
+                            placeholder="Select risk level"
+                            onChange={handlePatientFilter("risk")}
+                          >
                             <option>High</option>
                             <option>Medium</option>
                             <option>Low</option>
