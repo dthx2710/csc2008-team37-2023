@@ -90,8 +90,10 @@ const AdminDashboard = () => {
     if (props === "age") {
       if (value === "")
         setPatientFilter({ ...patientFilter, [props]: [0, 100] });
-      const age = value.split("-").map((x) => parseInt(x));
-      setPatientFilter({ ...patientFilter, [props]: age });
+      else {
+        const age = value.split("-").map((x) => parseInt(x));
+        setPatientFilter({ ...patientFilter, [props]: age });
+      }
     } else setPatientFilter({ ...patientFilter, [props]: value });
   };
 
@@ -837,6 +839,13 @@ const AdminDashboard = () => {
                         <GridItem colSpan={2}>
                           <FormLabel>Age</FormLabel>
                           <Select
+                            value={
+                              patientFilter.age
+                                ? patientFilter.age.reduce(
+                                    (a, b) => a + "-" + b
+                                  )
+                                : patientFilter.age
+                            }
                             placeholder="Select age range"
                             onChange={handlePatientFilter("age")}
                           >
@@ -851,6 +860,7 @@ const AdminDashboard = () => {
                         <GridItem colSpan={2}>
                           <FormLabel>Gender</FormLabel>
                           <Select
+                            value={patientFilter.gender}
                             placeholder="Select gender"
                             onChange={handlePatientFilter("gender")}
                           >
@@ -861,6 +871,7 @@ const AdminDashboard = () => {
                         <GridItem colSpan={2}>
                           <FormLabel>Country</FormLabel>
                           <Select
+                            value={patientFilter.country}
                             placeholder="Select country"
                             onChange={handlePatientFilter("country")}
                           >
@@ -879,6 +890,7 @@ const AdminDashboard = () => {
                         <GridItem colSpan={2}>
                           <FormLabel>Risk</FormLabel>
                           <Select
+                            value={patientFilter.risk}
                             placeholder="Select risk level"
                             onChange={handlePatientFilter("risk")}
                           >
