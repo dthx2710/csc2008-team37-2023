@@ -14,6 +14,8 @@ const Brand = () => {
               src="/header-lung.png"
               alt=""
               className="-mr-10 w-full absolute right-0 object-cover h-full"
+              width={150}
+              height={150}
             />
           </span>
         </div>
