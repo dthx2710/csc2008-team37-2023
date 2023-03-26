@@ -88,14 +88,12 @@ const AdminDashboard = () => {
     const value = e.target.value;
     // destructure
     if (props === "age") {
+      if (value === "")
+        setPatientFilter({ ...patientFilter, [props]: [0, 100] });
       const age = value.split("-").map((x) => parseInt(x));
       setPatientFilter({ ...patientFilter, [props]: age });
     } else setPatientFilter({ ...patientFilter, [props]: value });
   };
-
-  useEffect(() => {
-    console.log(patientFilter);
-  }, [patientFilter]);
 
   const router = useRouter();
 
@@ -111,7 +109,6 @@ const AdminDashboard = () => {
   const handleDelete = useCallback(
     async (id) => {
       const del = data[id].patient_id;
-      console.log(del);
       if (del) {
         // prompt user to confirm delete
         const confirm = window.confirm(
@@ -132,7 +129,6 @@ const AdminDashboard = () => {
   const handleEdit = useCallback(
     async (id) => {
       const edit = data[id].patient_id;
-      console.log(edit);
       if (edit) {
         // prompt user to confirm edit
         const prompt = parseInt(window.prompt("Enter new country id (1-10):"));
@@ -194,7 +190,6 @@ const AdminDashboard = () => {
           };
         })
         .filter((row) => {
-          console.log("hi");
           return (
             row.age >= patientFilter.age[0] &&
             row.age <= patientFilter.age[1] &&
