@@ -509,7 +509,7 @@ const AdminDashboard = () => {
             overflowY: "hidden",
             borderBottom: "1px solid black",
           }}
-          onScroll={(e) => handleScroll(e)}
+          
         >
           <Table
             {...getTableProps()}
