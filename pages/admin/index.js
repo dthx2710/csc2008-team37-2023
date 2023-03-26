@@ -684,7 +684,6 @@ const AdminDashboard = () => {
             <TabList>
               <Tab>Dashboard</Tab>
               <Tab>Main</Tab>
-              <Tab>SQL Editor</Tab>
               <Tab>Correlation Heatmap</Tab>
               <Button
                 size="sm"
@@ -933,26 +932,6 @@ const AdminDashboard = () => {
                       keyField="id"
                     />
                   </CardBody>
-                  <CardFooter>{/* Insert Footer if any */}</CardFooter>
-                </Card>
-              </TabPanel>
-              {/* SQL Editor Tab */}
-              <TabPanel id="sql-editor">
-                <Box>
-                  <textarea
-                    id="query"
-                    style={{ width: "100%", height: "100%" }}
-                    placeholder="e.g. SELECT * FROM Patient;"
-                  ></textarea>
-                </Box>
-                <Button colorScheme="teal" variant="outline" onClick={runQuery}>
-                  Run Query
-                </Button>
-                <Card>
-                  <CardHeader>
-                    <Heading size="md"> Result</Heading>
-                  </CardHeader>
-                  <CardBody>{/* TODO */}</CardBody>
                   <CardFooter>{/* Insert Footer if any */}</CardFooter>
                 </Card>
               </TabPanel>
