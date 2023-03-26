@@ -507,9 +507,9 @@ const AdminDashboard = () => {
             maxWidth: "100%",
             overflowX: "scroll",
             overflowY: "hidden",
-            borderBottom: "1px solid black",
+            scrollbarWidth: "thin",
+            WebkitOverflowScrolling: "touch",
           }}
-          
         >
           <Table
             {...getTableProps()}
