@@ -849,12 +849,16 @@ const AdminDashboard = () => {
                             placeholder="Select age range"
                             onChange={handlePatientFilter("age")}
                           >
+                            <option>0-25</option>
                             <option>21-25</option>
                             <option>26-30</option>
                             <option>31-35</option>
                             <option>36-40</option>
                             <option>41-45</option>
                             <option>46-50</option>
+                            <option>51-60</option>
+                            <option>61-70</option>
+                            <option>71-100</option>
                           </Select>
                         </GridItem>
                         <GridItem colSpan={2}>
