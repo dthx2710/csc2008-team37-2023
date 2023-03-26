@@ -189,7 +189,7 @@ const AdminDashboard = () => {
       if (edit) {
         // prompt user to confirm edit
         const prompt = parseInt(window.prompt("Enter new country id (1-10):"));
-        if (prompt < 1 || prompt > 9) {
+        if (prompt > 0 || prompt < 11) {
           await axios.put(`/api/db/patient/${edit}`, {
             country_id: prompt,
           });
