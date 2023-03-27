@@ -34,3 +34,9 @@ y_pred = clf.predict(X_new)
 result = y_pred[0]
 sys.stdout.write(result)
 sys.stdout.flush()
+
+## Code to generate classification_report
+# from sklearn.metrics import accuracy_score, classification_report
+# y_test = test_df['Level_Num']
+# print('Accuracy Score: {:.2f}'.format(accuracy_score(y_test, y_pred)))
+# print(classification_report(y_test, y_pred))
