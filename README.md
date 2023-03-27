@@ -1,4 +1,4 @@
-# Lung Cancer Risk Assessment Survey
+# Lung Cancer Prediction using Machine Learning
 This project is a survey assessment form and admin dashboard built using React on Next.js, and python ml libraries.
 The main goal of the application is to allow users to find out their lung cancer risk level, and to showcase our database learning throughout this module.
 We are using a SQL databse hosted on PlanetScale (cloud provider), with Prisma object relational mapper to support our CRUD serverless function api calls.
